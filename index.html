@@ -104,6 +104,9 @@
         <div class="shortcuts-list">
           <div class="shortcut-item"><span class="kbd">N</span> New task</div>
           <div class="shortcut-item">
+            <span class="kbd">/</span> Search tasks
+          </div>
+          <div class="shortcut-item">
             <span class="kbd">Esc</span> Close modal
           </div>
           <div class="shortcut-item">
@@ -436,28 +439,33 @@
         <!-- Statistics Cards -->
         <section class="stats-grid">
           <div class="stat-card stat-total">
-            <div class="stat-icon">📋</div>
+            <div class="stat-icon total">📋</div>
             <div class="stat-content">
               <h3 class="stat-value" id="stat-total-tasks">0</h3>
               <p class="stat-label">Total Tasks</p>
             </div>
           </div>
           <div class="stat-card stat-completed">
-            <div class="stat-icon">✅</div>
+            <div class="stat-icon done">✅</div>
             <div class="stat-content">
               <h3 class="stat-value" id="stat-completed-tasks">0</h3>
               <p class="stat-label">Completed</p>
             </div>
           </div>
           <div class="stat-card stat-progress">
-            <div class="stat-icon">🔄</div>
+            <div class="stat-icon progress">🔄</div>
             <div class="stat-content">
               <h3 class="stat-value" id="stat-in-progress-tasks">0</h3>
               <p class="stat-label">In Progress</p>
             </div>
           </div>
           <div class="stat-card stat-productivity">
-            <div class="stat-icon">📈</div>
+            <div
+              class="stat-icon todo"
+              style="background: var(--warning-50); color: var(--warning-600)"
+            >
+              📈
+            </div>
             <div class="stat-content">
               <h3 class="stat-value" id="stat-productivity">0%</h3>
               <p class="stat-label">Productivity</p>
@@ -611,6 +619,16 @@
             <p class="tasks-subtitle">Manage and organize your tasks</p>
           </div>
           <div class="header-actions">
+            <div class="tasks-search-wrapper">
+              <span class="search-icon">🔍</span>
+              <input
+                type="text"
+                class="search-input"
+                id="task-search"
+                placeholder="Search tasks…"
+                aria-label="Search tasks"
+              />
+            </div>
             <div class="view-toggle">
               <button
                 class="view-btn active"
@@ -663,6 +681,14 @@
                 <h3>To Do</h3>
                 <span class="task-count" id="count-todo">0</span>
               </div>
+              <button
+                class="column-add-btn"
+                data-status="todo"
+                title="Add task"
+                aria-label="Add task to To Do"
+              >
+                +
+              </button>
             </div>
             <div class="column-body" id="column-todo">
               <!-- Task cards will be rendered here -->
@@ -675,6 +701,14 @@
                 <h3>In Progress</h3>
                 <span class="task-count" id="count-in-progress">0</span>
               </div>
+              <button
+                class="column-add-btn"
+                data-status="in-progress"
+                title="Add task"
+                aria-label="Add task to In Progress"
+              >
+                +
+              </button>
             </div>
             <div class="column-body" id="column-in-progress">
               <!-- Task cards will be rendered here -->
@@ -687,6 +721,14 @@
                 <h3>Done</h3>
                 <span class="task-count" id="count-done">0</span>
               </div>
+              <button
+                class="column-add-btn"
+                data-status="done"
+                title="Add task"
+                aria-label="Add task to Done"
+              >
+                +
+              </button>
             </div>
             <div class="column-body" id="column-done">
               <!-- Task cards will be rendered here -->
@@ -807,14 +849,19 @@
       <div class="modal-overlay" id="confirm-modal">
         <div class="modal-container modal-sm">
           <div class="modal-header">
-            <h2>Confirm Delete</h2>
+            <h2>Delete Task</h2>
             <button class="modal-close" id="confirm-close">×</button>
           </div>
           <div class="modal-body">
-            <p class="confirm-message">
-              Are you sure you want to delete this task? This action cannot be
-              undone.
-            </p>
+            <div class="delete-warning">
+              <div class="warning-icon">🗑️</div>
+              <div>
+                <p class="delete-warning-title">This action cannot be undone</p>
+                <p class="delete-warning-desc">
+                  Are you sure you want to permanently delete this task?
+                </p>
+              </div>
+            </div>
             <div class="form-actions">
               <button
                 type="button"
@@ -824,7 +871,7 @@
                 Cancel
               </button>
               <button type="button" class="btn btn-danger" id="confirm-delete">
-                <span class="btn-text">Delete</span>
+                <span class="btn-text">Delete Task</span>
                 <span class="btn-loader hidden"></span>
               </button>
             </div>
@@ -882,8 +929,11 @@
     <template id="template-task-card">
       <div class="task-card" data-task-id="" tabindex="0">
         <div class="task-card-header">
-          <span class="priority-indicator"></span>
-          <div class="task-actions">
+          <div class="task-card-header-left">
+            <span class="priority-indicator"></span>
+            <span class="task-priority-label"></span>
+          </div>
+          <div class="task-card-actions">
             <button
               class="task-action-btn edit-btn"
               title="Edit task"
@@ -892,7 +942,7 @@
               ✏️
             </button>
             <button
-              class="task-action-btn delete-btn"
+              class="task-action-btn delete-btn delete"
               title="Delete task"
               aria-label="Delete task"
             >
@@ -901,23 +951,23 @@
           </div>
         </div>
         <div class="task-card-body">
-          <h4 class="task-title"></h4>
-          <p class="task-description"></p>
+          <h4 class="task-card-title"></h4>
+          <p class="task-card-description"></p>
         </div>
         <div class="task-card-footer">
-          <div class="task-meta">
+          <div class="task-card-meta">
             <span class="task-due-date"></span>
           </div>
-          <div class="task-status-actions">
+          <div class="task-navigation">
             <button
-              class="status-btn prev"
+              class="nav-btn prev"
               title="Move to previous status"
               aria-label="Move to previous status"
             >
               ←
             </button>
             <button
-              class="status-btn next"
+              class="nav-btn next"
               title="Move to next status"
               aria-label="Move to next status"
             >

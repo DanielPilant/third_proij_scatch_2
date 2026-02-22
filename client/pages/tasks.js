@@ -34,6 +34,7 @@ let currentView = "board";
 // Current filter/sort settings
 let filterPriority = "";
 let sortBy = "created";
+let searchQuery = "";
 
 // Task being edited (null for create)
 let editingTaskId = null;
@@ -59,6 +60,11 @@ export function renderTasksPage(container) {
  * Initialize tasks page functionality
  */
 export function initTasksPage() {
+  // Reset filter/search state for clean page load
+  filterPriority = "";
+  sortBy = "created";
+  searchQuery = "";
+
   // Load tasks
   loadTasks();
 
@@ -68,14 +74,46 @@ export function initTasksPage() {
   // Setup filter dropdown
   setupFilters();
 
+  // Setup search
+  setupSearch();
+
   // Setup add task button
   setupAddTaskButton();
+
+  // Setup column quick-add buttons
+  setupColumnAddButtons();
 
   // Setup modal
   setupTaskModal();
 
   // Setup keyboard shortcuts
   setupKeyboardShortcuts();
+}
+
+/**
+ * Setup search input
+ */
+function setupSearch() {
+  const searchInput = document.getElementById("task-search");
+  if (!searchInput) return;
+
+  let debounceTimer;
+  searchInput.addEventListener("input", (e) => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      searchQuery = e.target.value.trim().toLowerCase();
+      renderTasks(state.getTasks());
+    }, 200);
+  });
+
+  // Clear search on Escape
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      searchInput.value = "";
+      searchQuery = "";
+      renderTasks(state.getTasks());
+    }
+  });
 }
 
 /**
@@ -96,6 +134,16 @@ function setupKeyboardShortcuts() {
     if (e.key === "n" || e.key === "N") {
       e.preventDefault();
       openTaskModal();
+    }
+
+    // / - Focus search
+    if (e.key === "/") {
+      e.preventDefault();
+      const searchInput = document.getElementById("task-search");
+      if (searchInput) {
+        searchInput.focus();
+        searchInput.select();
+      }
     }
 
     // Escape - Close any open modal
@@ -161,6 +209,14 @@ function renderTasks(tasks) {
     filteredTasks = filteredTasks.filter((t) => t.priority === filterPriority);
   }
 
+  if (searchQuery) {
+    filteredTasks = filteredTasks.filter(
+      (t) =>
+        t.title.toLowerCase().includes(searchQuery) ||
+        (t.description || "").toLowerCase().includes(searchQuery),
+    );
+  }
+
   // Apply sorting
   filteredTasks = sortTasks(filteredTasks, sortBy);
 
@@ -169,6 +225,7 @@ function renderTasks(tasks) {
   const boardEl = document.getElementById("kanban-board");
   const listEl = document.getElementById("tasks-list");
 
+  // Truly empty (no tasks at all)
   if (tasks.length === 0) {
     emptyState?.classList.remove("hidden");
     boardEl?.classList.add("hidden");
@@ -178,9 +235,33 @@ function renderTasks(tasks) {
     const emptyAddBtn = document.getElementById("empty-add-task");
     emptyAddBtn?.addEventListener("click", () => openTaskModal());
     return;
-  } else {
-    emptyState?.classList.add("hidden");
   }
+
+  emptyState?.classList.add("hidden");
+
+  // Filter / search yielded no results
+  if (filteredTasks.length === 0) {
+    const noResultsId = "no-filter-results";
+    let noResults = document.getElementById(noResultsId);
+    if (!noResults) {
+      noResults = document.createElement("div");
+      noResults.id = noResultsId;
+      noResults.className = "empty-state-large";
+      noResults.innerHTML = `
+        <div class="empty-illustration"><div class="empty-icon-wrapper"><span>🔍</span></div></div>
+        <h2>No matching tasks</h2>
+        <p>Try adjusting your search or filter criteria.</p>
+      `;
+      boardEl?.parentNode?.insertBefore(noResults, boardEl);
+    }
+    noResults.classList.remove("hidden");
+    boardEl?.classList.add("hidden");
+    listEl?.classList.add("hidden");
+    return;
+  }
+
+  // Hide no-results if visible
+  document.getElementById("no-filter-results")?.classList.add("hidden");
 
   if (currentView === "board") {
     boardEl?.classList.remove("hidden");
@@ -369,6 +450,26 @@ function setupFilters() {
   sortSelect?.addEventListener("change", (e) => {
     sortBy = e.target.value;
     renderTasks(state.getTasks());
+  });
+}
+
+/**
+ * Setup per-column add task buttons
+ */
+function setupColumnAddButtons() {
+  const columnBtns = document.querySelectorAll(".column-add-btn");
+  columnBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const status = btn.getAttribute("data-status");
+      openTaskModal();
+      // Pre-select the status for this column after modal opens
+      setTimeout(() => {
+        const statusSelect = document.getElementById("task-status");
+        if (statusSelect && status) {
+          statusSelect.value = status;
+        }
+      }, 50);
+    });
   });
 }
 

@@ -126,23 +126,26 @@ export function createTaskCard(task, handlers = {}) {
     cardElement.className = "task-card";
     cardElement.innerHTML = `
             <div class="task-card-header">
-                <span class="priority-indicator"></span>
-                <div class="task-actions">
-                    <button class="task-action-btn edit-btn" title="Edit">✏️</button>
-                    <button class="task-action-btn delete-btn" title="Delete">🗑️</button>
+                <div class="task-card-header-left">
+                    <span class="priority-indicator"></span>
+                    <span class="task-priority-label"></span>
+                </div>
+                <div class="task-card-actions">
+                    <button class="task-action-btn edit-btn" title="Edit" aria-label="Edit task">✏️</button>
+                    <button class="task-action-btn delete-btn delete" title="Delete" aria-label="Delete task">🗑️</button>
                 </div>
             </div>
             <div class="task-card-body">
-                <h4 class="task-title"></h4>
-                <p class="task-description"></p>
+                <h4 class="task-card-title"></h4>
+                <p class="task-card-description"></p>
             </div>
             <div class="task-card-footer">
-                <div class="task-meta">
+                <div class="task-card-meta">
                     <span class="task-due-date"></span>
                 </div>
-                <div class="task-status-actions">
-                    <button class="status-btn prev" title="Move to previous status">←</button>
-                    <button class="status-btn next" title="Move to next status">→</button>
+                <div class="task-navigation">
+                    <button class="nav-btn prev" title="Move to previous status" aria-label="Move to previous status">←</button>
+                    <button class="nav-btn next" title="Move to next status" aria-label="Move to next status">→</button>
                 </div>
             </div>
         `;
@@ -167,20 +170,27 @@ export function createTaskCard(task, handlers = {}) {
     priorityIndicator.setAttribute("title", `${task.priority} priority`);
   }
 
+  // Set priority label badge
+  const priorityLabelEl = cardElement.querySelector(".task-priority-label");
+  if (priorityLabelEl) {
+    priorityLabelEl.textContent = task.priority;
+    priorityLabelEl.className = `task-priority-label priority-badge ${priorityClass}`;
+  }
+
   // Set title
-  const titleEl = cardElement.querySelector(".task-title");
+  const titleEl = cardElement.querySelector(".task-card-title");
   if (titleEl) {
     titleEl.textContent = task.title;
   }
 
   // Set description
-  const descEl = cardElement.querySelector(".task-description");
+  const descEl = cardElement.querySelector(".task-card-description");
   if (descEl) {
     if (task.description) {
       descEl.textContent = task.description;
     } else {
       descEl.classList.add("empty");
-      descEl.textContent = "No description";
+      descEl.style.display = "none";
     }
   }
 
@@ -193,8 +203,8 @@ export function createTaskCard(task, handlers = {}) {
   }
 
   // Setup status movement buttons
-  const prevBtn = cardElement.querySelector(".status-btn.prev");
-  const nextBtn = cardElement.querySelector(".status-btn.next");
+  const prevBtn = cardElement.querySelector(".nav-btn.prev");
+  const nextBtn = cardElement.querySelector(".nav-btn.next");
 
   if (prevBtn) {
     if (canMovePrev(task.status)) {

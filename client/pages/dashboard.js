@@ -285,7 +285,10 @@ function updateDeadlinesList(deadlines) {
       let urgencyClass = "due-normal";
       let urgencyText = formatDate(task.dueDate);
 
-      if (daysUntil === 0) {
+      if (daysUntil < 0) {
+        urgencyClass = "due-overdue";
+        urgencyText = `Overdue by ${Math.abs(daysUntil)}d`;
+      } else if (daysUntil === 0) {
         urgencyClass = "due-today";
         urgencyText = "Due today";
       } else if (daysUntil === 1) {
@@ -296,8 +299,16 @@ function updateDeadlinesList(deadlines) {
         urgencyText = `Due in ${daysUntil} days`;
       }
 
+      const statusClass =
+        task.status === "done"
+          ? "done"
+          : task.status === "in-progress"
+            ? "progress"
+            : "todo";
+
       return `
             <div class="deadline-item">
+                <span class="deadline-status ${statusClass}"></span>
                 <div class="deadline-info">
                     <span class="deadline-title">${escapeHtml(task.title)}</span>
                     <span class="deadline-date ${urgencyClass}">${urgencyText}</span>
@@ -330,9 +341,9 @@ function updateRecentActivity(recentTasks) {
     .map(
       (task) => `
         <div class="activity-item">
-            <span class="activity-icon">✅</span>
+            <span class="activity-icon completed">✅</span>
             <div class="activity-content">
-                <span class="activity-text">Completed "${escapeHtml(task.title)}"</span>
+                <p class="activity-text">Completed <strong>${escapeHtml(task.title)}</strong></p>
                 <span class="activity-time">${formatRelativeDate(task.completedAt)}</span>
             </div>
         </div>
