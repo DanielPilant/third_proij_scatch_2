@@ -51,7 +51,7 @@ export function initLoginPage() {
   // Setup password visibility toggle
   setupPasswordToggle();
 
-  // Setup form validation on input
+  // Setup form validation on input (real-time with debounce)
   emailInput?.addEventListener("blur", () => validateEmail(emailInput));
   passwordInput?.addEventListener("blur", () =>
     validatePassword(passwordInput),
@@ -62,6 +62,16 @@ export function initLoginPage() {
   passwordInput?.addEventListener("focus", () =>
     clearError("login-password-error"),
   );
+
+  // Auto-focus email field for quick entry
+  setTimeout(() => emailInput?.focus(), 300);
+
+  // Allow Enter key in password to submit
+  passwordInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      form.requestSubmit();
+    }
+  });
 
   // Form submission
   form.addEventListener("submit", handleLoginSubmit);

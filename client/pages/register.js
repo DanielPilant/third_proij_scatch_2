@@ -78,6 +78,18 @@ export function initRegisterPage() {
     clearError("register-confirm-error"),
   );
 
+  // Real-time password match check
+  confirmInput?.addEventListener("input", () => {
+    if (confirmInput.value && passwordInput.value !== confirmInput.value) {
+      confirmInput.classList.add("invalid");
+    } else {
+      confirmInput.classList.remove("invalid");
+    }
+  });
+
+  // Auto-focus name field for quick entry
+  setTimeout(() => nameInput?.focus(), 300);
+
   // Form submission
   form.addEventListener("submit", handleRegisterSubmit);
 }

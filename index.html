@@ -3,7 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta
+      name="description"
+      content="TaskMaster Pro - A modern task management application to boost your productivity"
+    />
     <title>TaskMaster Pro - Your Productivity Hub</title>
+
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
     <!-- Styles -->
     <link rel="stylesheet" href="client/styles/main.css" />
@@ -73,9 +86,31 @@
       </div>
 
       <!-- Floating button to toggle dev panel -->
-      <button id="dev-panel-fab" class="dev-fab" title="Toggle Developer Panel">
+      <button
+        id="dev-panel-fab"
+        class="dev-fab"
+        title="Toggle Developer Panel"
+        aria-label="Toggle Developer Panel"
+      >
         ⚙️
       </button>
+
+      <!-- Keyboard shortcuts hint -->
+      <div class="keyboard-shortcuts-hint hidden" id="shortcuts-hint">
+        <div class="shortcuts-header">
+          <h4>Keyboard Shortcuts</h4>
+          <button class="shortcuts-close" id="shortcuts-close">×</button>
+        </div>
+        <div class="shortcuts-list">
+          <div class="shortcut-item"><span class="kbd">N</span> New task</div>
+          <div class="shortcut-item">
+            <span class="kbd">Esc</span> Close modal
+          </div>
+          <div class="shortcut-item">
+            <span class="kbd">?</span> Show shortcuts
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- =====================================================
@@ -84,70 +119,119 @@
 
     <!-- Login Page Template -->
     <template id="template-login">
-      <div class="auth-container">
-        <div class="auth-card">
-          <div class="auth-header">
-            <div class="auth-logo">
-              <span class="logo-icon">✓</span>
-              <h1>TaskMaster Pro</h1>
-            </div>
-            <p class="auth-subtitle">
-              Welcome back! Please sign in to continue.
-            </p>
-          </div>
-          <form id="login-form" class="auth-form">
-            <div class="form-group">
-              <label for="login-email">Email Address</label>
-              <input
-                type="email"
-                id="login-email"
-                name="email"
-                placeholder="Enter your email"
-                required
-                autocomplete="email"
-              />
-              <span class="form-error" id="login-email-error"></span>
-            </div>
-            <div class="form-group">
-              <label for="login-password">Password</label>
-              <div class="password-input-wrapper">
-                <input
-                  type="password"
-                  id="login-password"
-                  name="password"
-                  placeholder="Enter your password"
-                  required
-                  autocomplete="current-password"
-                />
-                <button
-                  type="button"
-                  class="password-toggle"
-                  data-target="login-password"
-                >
-                  👁️
-                </button>
+      <div class="auth-page">
+        <div class="floating-shapes">
+          <div class="floating-shape shape-1"></div>
+          <div class="floating-shape shape-2"></div>
+          <div class="floating-shape shape-3"></div>
+          <div class="floating-shape shape-4"></div>
+        </div>
+        <div class="auth-split">
+          <div class="auth-showcase">
+            <div class="showcase-content">
+              <div class="showcase-badge">Welcome to TaskMaster</div>
+              <h2 class="showcase-title">
+                Organize your work,<br />amplify your life.
+              </h2>
+              <p class="showcase-desc">
+                Join thousands of teams who use TaskMaster Pro to manage their
+                tasks efficiently.
+              </p>
+              <div class="showcase-features">
+                <div class="showcase-feature">
+                  <span class="feature-icon">📊</span>
+                  <div>
+                    <strong>Visual Dashboards</strong>
+                    <p>Track progress with beautiful charts</p>
+                  </div>
+                </div>
+                <div class="showcase-feature">
+                  <span class="feature-icon">📋</span>
+                  <div>
+                    <strong>Kanban Boards</strong>
+                    <p>Drag tasks between statuses effortlessly</p>
+                  </div>
+                </div>
+                <div class="showcase-feature">
+                  <span class="feature-icon">⚡</span>
+                  <div>
+                    <strong>Real-time Updates</strong>
+                    <p>Stay in sync with your team instantly</p>
+                  </div>
+                </div>
               </div>
-              <span class="form-error" id="login-password-error"></span>
             </div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary btn-block">
-                <span class="btn-text">Sign In</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-            <div class="form-footer">
-              <p>
-                Don't have an account?
-                <a href="#/register" class="auth-link">Create one</a>
+          </div>
+          <div class="auth-card">
+            <div class="auth-header">
+              <div class="auth-logo">
+                <span class="logo-icon">✓</span>
+                <h1>TaskMaster Pro</h1>
+              </div>
+              <p class="auth-subtitle">
+                Welcome back! Please sign in to continue.
               </p>
             </div>
-          </form>
-        </div>
-        <div class="auth-decoration">
-          <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
+            <form id="login-form" class="auth-form" novalidate>
+              <div class="form-group">
+                <label for="login-email">Email Address</label>
+                <div class="input-icon-wrapper">
+                  <span class="input-icon">&#9993;</span>
+                  <input
+                    type="email"
+                    id="login-email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    autocomplete="email"
+                  />
+                </div>
+                <span
+                  class="form-error"
+                  id="login-email-error"
+                  role="alert"
+                ></span>
+              </div>
+              <div class="form-group">
+                <label for="login-password">Password</label>
+                <div class="password-input-wrapper">
+                  <span class="input-icon">&#128274;</span>
+                  <input
+                    type="password"
+                    id="login-password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                    autocomplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    data-target="login-password"
+                    aria-label="Toggle password visibility"
+                  >
+                    👁️
+                  </button>
+                </div>
+                <span
+                  class="form-error"
+                  id="login-password-error"
+                  role="alert"
+                ></span>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-block">
+                  <span class="btn-text">Sign In</span>
+                  <span class="btn-loader hidden"></span>
+                </button>
+              </div>
+              <div class="form-footer">
+                <p>
+                  Don't have an account?
+                  <a href="#/register" class="auth-link">Create one</a>
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -155,111 +239,178 @@
 
     <!-- Register Page Template -->
     <template id="template-register">
-      <div class="auth-container">
-        <div class="auth-card">
-          <div class="auth-header">
-            <div class="auth-logo">
-              <span class="logo-icon">✓</span>
-              <h1>TaskMaster Pro</h1>
-            </div>
-            <p class="auth-subtitle">
-              Create your account and boost your productivity!
-            </p>
-          </div>
-          <form id="register-form" class="auth-form">
-            <div class="form-group">
-              <label for="register-name">Full Name</label>
-              <input
-                type="text"
-                id="register-name"
-                name="name"
-                placeholder="Enter your full name"
-                required
-                autocomplete="name"
-              />
-              <span class="form-error" id="register-name-error"></span>
-            </div>
-            <div class="form-group">
-              <label for="register-email">Email Address</label>
-              <input
-                type="email"
-                id="register-email"
-                name="email"
-                placeholder="Enter your email"
-                required
-                autocomplete="email"
-              />
-              <span class="form-error" id="register-email-error"></span>
-            </div>
-            <div class="form-group">
-              <label for="register-password">Password</label>
-              <div class="password-input-wrapper">
-                <input
-                  type="password"
-                  id="register-password"
-                  name="password"
-                  placeholder="Create a strong password"
-                  required
-                  autocomplete="new-password"
-                />
-                <button
-                  type="button"
-                  class="password-toggle"
-                  data-target="register-password"
-                >
-                  👁️
-                </button>
-              </div>
-              <span class="form-error" id="register-password-error"></span>
-              <div class="password-strength">
-                <div class="strength-bar">
-                  <div class="strength-fill" id="password-strength-fill"></div>
+      <div class="auth-page">
+        <div class="floating-shapes">
+          <div class="floating-shape shape-1"></div>
+          <div class="floating-shape shape-2"></div>
+          <div class="floating-shape shape-3"></div>
+          <div class="floating-shape shape-4"></div>
+        </div>
+        <div class="auth-split">
+          <div class="auth-showcase">
+            <div class="showcase-content">
+              <div class="showcase-badge">Get Started Free</div>
+              <h2 class="showcase-title">Start managing tasks like a pro.</h2>
+              <p class="showcase-desc">
+                Create your free account and discover a better way to manage
+                your workflow.
+              </p>
+              <div class="showcase-stats">
+                <div class="showcase-stat">
+                  <span class="stat-number">10k+</span>
+                  <span class="stat-label">Active Users</span>
                 </div>
-                <span class="strength-text" id="password-strength-text"
-                  >Password strength</span
-                >
+                <div class="showcase-stat">
+                  <span class="stat-number">500k+</span>
+                  <span class="stat-label">Tasks Completed</span>
+                </div>
+                <div class="showcase-stat">
+                  <span class="stat-number">99%</span>
+                  <span class="stat-label">Uptime</span>
+                </div>
+              </div>
+              <div class="showcase-testimonial">
+                <p>
+                  &ldquo;TaskMaster Pro transformed how our team collaborates.
+                  Highly recommended!&rdquo;
+                </p>
+                <div class="testimonial-author">
+                  <span class="testimonial-avatar">JD</span>
+                  <div>
+                    <strong>Jane Doe</strong>
+                    <span>Product Manager</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="form-group">
-              <label for="register-confirm">Confirm Password</label>
-              <div class="password-input-wrapper">
-                <input
-                  type="password"
-                  id="register-confirm"
-                  name="confirmPassword"
-                  placeholder="Confirm your password"
-                  required
-                  autocomplete="new-password"
-                />
-                <button
-                  type="button"
-                  class="password-toggle"
-                  data-target="register-confirm"
-                >
-                  👁️
-                </button>
+          </div>
+          <div class="auth-card">
+            <div class="auth-header">
+              <div class="auth-logo">
+                <span class="logo-icon">✓</span>
+                <h1>TaskMaster Pro</h1>
               </div>
-              <span class="form-error" id="register-confirm-error"></span>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary btn-block">
-                <span class="btn-text">Create Account</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-            <div class="form-footer">
-              <p>
-                Already have an account?
-                <a href="#/login" class="auth-link">Sign in</a>
+              <p class="auth-subtitle">
+                Create your account and boost your productivity!
               </p>
             </div>
-          </form>
-        </div>
-        <div class="auth-decoration">
-          <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
+            <form id="register-form" class="auth-form" novalidate>
+              <div class="form-group">
+                <label for="register-name">Full Name</label>
+                <div class="input-icon-wrapper">
+                  <span class="input-icon">&#128100;</span>
+                  <input
+                    type="text"
+                    id="register-name"
+                    name="name"
+                    placeholder="Enter your full name"
+                    required
+                    autocomplete="name"
+                  />
+                </div>
+                <span
+                  class="form-error"
+                  id="register-name-error"
+                  role="alert"
+                ></span>
+              </div>
+              <div class="form-group">
+                <label for="register-email">Email Address</label>
+                <div class="input-icon-wrapper">
+                  <span class="input-icon">&#9993;</span>
+                  <input
+                    type="email"
+                    id="register-email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required
+                    autocomplete="email"
+                  />
+                </div>
+                <span
+                  class="form-error"
+                  id="register-email-error"
+                  role="alert"
+                ></span>
+              </div>
+              <div class="form-group">
+                <label for="register-password">Password</label>
+                <div class="password-input-wrapper">
+                  <span class="input-icon">&#128274;</span>
+                  <input
+                    type="password"
+                    id="register-password"
+                    name="password"
+                    placeholder="Create a strong password"
+                    required
+                    autocomplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    data-target="register-password"
+                    aria-label="Toggle password visibility"
+                  >
+                    👁️
+                  </button>
+                </div>
+                <span
+                  class="form-error"
+                  id="register-password-error"
+                  role="alert"
+                ></span>
+                <div class="password-strength">
+                  <div class="strength-bar">
+                    <div
+                      class="strength-fill"
+                      id="password-strength-fill"
+                    ></div>
+                  </div>
+                  <span class="strength-text" id="password-strength-text"
+                    >Password strength</span
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="register-confirm">Confirm Password</label>
+                <div class="password-input-wrapper">
+                  <span class="input-icon">&#128274;</span>
+                  <input
+                    type="password"
+                    id="register-confirm"
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    required
+                    autocomplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    data-target="register-confirm"
+                    aria-label="Toggle password visibility"
+                  >
+                    👁️
+                  </button>
+                </div>
+                <span
+                  class="form-error"
+                  id="register-confirm-error"
+                  role="alert"
+                ></span>
+              </div>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-block">
+                  <span class="btn-text">Create Account</span>
+                  <span class="btn-loader hidden"></span>
+                </button>
+              </div>
+              <div class="form-footer">
+                <p>
+                  Already have an account?
+                  <a href="#/login" class="auth-link">Sign in</a>
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </div>
@@ -563,12 +714,22 @@
 
         <!-- Empty State -->
         <div class="empty-state-large hidden" id="empty-tasks">
-          <div class="empty-illustration">📝</div>
+          <div class="empty-illustration">
+            <div class="empty-icon-wrapper">
+              <span>📝</span>
+            </div>
+          </div>
           <h2>No tasks yet</h2>
-          <p>Create your first task to get started!</p>
-          <button class="btn btn-primary" id="empty-add-task">
-            Create Task
+          <p>
+            Your task board is empty. Create your first task to get started on
+            your productivity journey!
+          </p>
+          <button class="btn btn-primary btn-lg" id="empty-add-task">
+            <span>+</span> Create Your First Task
           </button>
+          <div class="empty-hint">
+            <span class="kbd">N</span> to quickly create a new task
+          </div>
         </div>
       </div>
     </template>
@@ -681,7 +842,16 @@
             <span class="brand-text">TaskMaster</span>
           </a>
         </div>
-        <nav class="navbar-menu">
+        <button
+          class="mobile-menu-toggle"
+          id="mobile-menu-toggle"
+          aria-label="Toggle navigation menu"
+        >
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <nav class="navbar-menu" id="navbar-menu">
           <a href="#/dashboard" class="nav-link" data-route="dashboard">
             <span class="nav-icon">📊</span>
             <span>Dashboard</span>
@@ -696,8 +866,13 @@
             <span class="user-avatar" id="user-avatar">U</span>
             <span class="user-name" id="user-name">User</span>
           </div>
-          <button class="btn btn-ghost logout-btn" id="logout-btn">
-            <span>Logout</span>
+          <button
+            class="btn btn-ghost logout-btn"
+            id="logout-btn"
+            aria-label="Log out"
+          >
+            <span class="logout-icon">&#x2190;</span>
+            <span class="logout-text">Logout</span>
           </button>
         </div>
       </div>
@@ -705,12 +880,22 @@
 
     <!-- Task Card Template -->
     <template id="template-task-card">
-      <div class="task-card" data-task-id="">
+      <div class="task-card" data-task-id="" tabindex="0">
         <div class="task-card-header">
           <span class="priority-indicator"></span>
           <div class="task-actions">
-            <button class="task-action-btn edit-btn" title="Edit">✏️</button>
-            <button class="task-action-btn delete-btn" title="Delete">
+            <button
+              class="task-action-btn edit-btn"
+              title="Edit task"
+              aria-label="Edit task"
+            >
+              ✏️
+            </button>
+            <button
+              class="task-action-btn delete-btn"
+              title="Delete task"
+              aria-label="Delete task"
+            >
               🗑️
             </button>
           </div>
@@ -724,10 +909,18 @@
             <span class="task-due-date"></span>
           </div>
           <div class="task-status-actions">
-            <button class="status-btn prev" title="Move to previous status">
+            <button
+              class="status-btn prev"
+              title="Move to previous status"
+              aria-label="Move to previous status"
+            >
               ←
             </button>
-            <button class="status-btn next" title="Move to next status">
+            <button
+              class="status-btn next"
+              title="Move to next status"
+              aria-label="Move to next status"
+            >
               →
             </button>
           </div>

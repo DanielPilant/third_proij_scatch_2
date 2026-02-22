@@ -73,6 +73,58 @@ export function initTasksPage() {
 
   // Setup modal
   setupTaskModal();
+
+  // Setup keyboard shortcuts
+  setupKeyboardShortcuts();
+}
+
+/**
+ * Setup keyboard shortcuts for the tasks page
+ */
+function setupKeyboardShortcuts() {
+  const handler = (e) => {
+    // Don't trigger if typing in an input
+    if (
+      e.target.tagName === "INPUT" ||
+      e.target.tagName === "TEXTAREA" ||
+      e.target.tagName === "SELECT"
+    ) {
+      return;
+    }
+
+    // N - New task
+    if (e.key === "n" || e.key === "N") {
+      e.preventDefault();
+      openTaskModal();
+    }
+
+    // Escape - Close any open modal
+    if (e.key === "Escape") {
+      closeTaskModal();
+      closeConfirmModal();
+      // Also close keyboard shortcuts hint
+      const hint = document.getElementById("shortcuts-hint");
+      if (hint) hint.classList.add("hidden");
+    }
+
+    // ? - Toggle keyboard shortcuts hint
+    if (e.key === "?") {
+      const hint = document.getElementById("shortcuts-hint");
+      if (hint) {
+        hint.classList.toggle("hidden");
+        const closeBtn = document.getElementById("shortcuts-close");
+        closeBtn?.addEventListener("click", () => hint.classList.add("hidden"));
+      }
+    }
+  };
+
+  document.addEventListener("keydown", handler);
+
+  // Store handler for cleanup (in case of SPA re-init, avoids stacking)
+  if (window.__tasksKeyboardHandler) {
+    document.removeEventListener("keydown", window.__tasksKeyboardHandler);
+  }
+  window.__tasksKeyboardHandler = handler;
 }
 
 /**
@@ -170,9 +222,22 @@ function renderKanbanBoard(tasks) {
       column.innerHTML = "";
 
       if (statusTasks.length === 0) {
+        const emptyIcons = {
+          [TASK_STATUS.TODO]: "📝",
+          [TASK_STATUS.IN_PROGRESS]: "⏳",
+          [TASK_STATUS.DONE]: "🎉",
+        };
+        const emptyTexts = {
+          [TASK_STATUS.TODO]: "No tasks to do",
+          [TASK_STATUS.IN_PROGRESS]: "Nothing in progress",
+          [TASK_STATUS.DONE]: "No completed tasks yet",
+        };
         column.innerHTML = `
                     <div class="column-empty">
-                        <p>No tasks</p>
+                        <div>
+                            <span style="font-size: 1.5rem; display: block; margin-bottom: 4px;">${emptyIcons[status] || "📋"}</span>
+                            <p>${emptyTexts[status] || "No tasks"}</p>
+                        </div>
                     </div>
                 `;
       } else {

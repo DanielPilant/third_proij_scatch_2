@@ -51,6 +51,17 @@ function getToastIcon(type) {
 }
 
 /**
+ * Get aria-live value for toast type
+ * @param {string} type - Toast type
+ * @returns {string}
+ */
+function getAriaLive(type) {
+  return type === TOAST_TYPES.ERROR || type === TOAST_TYPES.WARNING
+    ? "assertive"
+    : "polite";
+}
+
+/**
  * Show a toast notification
  * @param {string} message - Message to display
  * @param {string} type - Toast type (success, error, warning, info)
@@ -97,6 +108,10 @@ export function showToast(
 
   // Set type class
   toastElement.classList.add(`toast-${type}`);
+
+  // Set accessibility
+  toastElement.setAttribute("role", "alert");
+  toastElement.setAttribute("aria-live", getAriaLive(type));
 
   // Set content
   const iconEl = toastElement.querySelector(".toast-icon");

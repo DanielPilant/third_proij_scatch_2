@@ -5,8 +5,10 @@
  *
  * Navigation bar component that displays:
  * - Brand logo
- * - Navigation links
+ * - Navigation links with active indicator
  * - User info and logout button
+ * - Mobile hamburger menu
+ * - Scroll shadow effect
  */
 
 import state from "../state.js";
@@ -18,6 +20,9 @@ import state from "../state.js";
 function getNavbarContainer() {
   return document.getElementById("navbar-container");
 }
+
+// Track scroll handler for cleanup
+let _scrollHandler = null;
 
 /**
  * Render the navbar component
@@ -42,7 +47,12 @@ export function renderNavbar() {
                         <span class="brand-text">TaskMaster</span>
                     </a>
                 </div>
-                <nav class="navbar-menu">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+                <nav class="navbar-menu" id="navbar-menu">
                     <a href="#/dashboard" class="nav-link" data-route="dashboard">
                         <span class="nav-icon">📊</span>
                         <span>Dashboard</span>
@@ -57,8 +67,9 @@ export function renderNavbar() {
                         <span class="user-avatar" id="user-avatar">U</span>
                         <span class="user-name" id="user-name">User</span>
                     </div>
-                    <button class="btn btn-ghost logout-btn" id="logout-btn">
-                        <span>Logout</span>
+                    <button class="btn btn-ghost logout-btn" id="logout-btn" aria-label="Log out">
+                        <span class="logout-icon">←</span>
+                        <span class="logout-text">Logout</span>
                     </button>
                 </div>
             </div>
@@ -70,6 +81,12 @@ export function renderNavbar() {
 
   // Mark active link
   updateActiveLink();
+
+  // Setup mobile menu
+  setupMobileMenu();
+
+  // Setup scroll shadow
+  setupScrollShadow();
 
   // Show navbar
   container.classList.remove("hidden");
@@ -84,6 +101,11 @@ export function hideNavbar() {
     container.innerHTML = "";
     container.classList.add("hidden");
   }
+  // Cleanup scroll handler
+  if (_scrollHandler) {
+    window.removeEventListener("scroll", _scrollHandler);
+    _scrollHandler = null;
+  }
 }
 
 /**
@@ -97,7 +119,17 @@ export function updateUserInfo() {
   const avatarEl = document.getElementById("user-avatar");
   const nameEl = document.getElementById("user-name");
 
-  if (avatarEl && user.avatar) {
+  if (avatarEl && user.name) {
+    // Generate initials from name
+    const initials = user.name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+    avatarEl.textContent = initials;
+    avatarEl.title = user.name;
+  } else if (avatarEl && user.avatar) {
     avatarEl.textContent = user.avatar;
   }
 
@@ -122,6 +154,63 @@ export function updateActiveLink() {
       link.classList.remove("active");
     }
   });
+}
+
+/**
+ * Setup mobile hamburger menu
+ */
+function setupMobileMenu() {
+  const toggleBtn = document.getElementById("mobile-menu-toggle");
+  const menu = document.getElementById("navbar-menu");
+
+  if (!toggleBtn || !menu) return;
+
+  toggleBtn.addEventListener("click", () => {
+    toggleBtn.classList.toggle("active");
+    menu.classList.toggle("mobile-open");
+  });
+
+  // Close mobile menu when a nav link is clicked
+  menu.querySelectorAll(".nav-link").forEach((link) => {
+    link.addEventListener("click", () => {
+      toggleBtn.classList.remove("active");
+      menu.classList.remove("mobile-open");
+    });
+  });
+
+  // Close mobile menu on outside click
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".navbar")) {
+      toggleBtn.classList.remove("active");
+      menu.classList.remove("mobile-open");
+    }
+  });
+}
+
+/**
+ * Setup scroll shadow effect on navbar
+ */
+function setupScrollShadow() {
+  const navbar = document.querySelector(".navbar");
+  if (!navbar) return;
+
+  // Remove old handler
+  if (_scrollHandler) {
+    window.removeEventListener("scroll", _scrollHandler);
+  }
+
+  _scrollHandler = () => {
+    if (window.scrollY > 10) {
+      navbar.classList.add("scrolled");
+    } else {
+      navbar.classList.remove("scrolled");
+    }
+  };
+
+  window.addEventListener("scroll", _scrollHandler, { passive: true });
+
+  // Check initial state
+  _scrollHandler();
 }
 
 // Subscribe to user changes

@@ -66,14 +66,15 @@ export function initDashboardPage() {
 }
 
 /**
- * Update greeting message with user name
+ * Update greeting message with user name and date context
  */
 function updateGreeting() {
   const greetingEl = document.getElementById("dashboard-greeting");
   const user = state.getUser();
 
   if (greetingEl && user?.name) {
-    const hour = new Date().getHours();
+    const now = new Date();
+    const hour = now.getHours();
     let greeting;
 
     if (hour < 12) {
@@ -84,7 +85,13 @@ function updateGreeting() {
       greeting = "Good evening";
     }
 
-    greetingEl.textContent = `${greeting}, ${user.name}!`;
+    const dayName = now.toLocaleDateString("en-US", { weekday: "long" });
+    const dateStr = now.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+    });
+
+    greetingEl.innerHTML = `${greeting}, <strong>${user.name}</strong>! Today is ${dayName}, ${dateStr}.`;
   }
 }
 
@@ -119,26 +126,60 @@ async function loadDashboardData() {
 }
 
 /**
- * Update statistic cards
+ * Animate a number counter from 0 to target value
+ * @param {HTMLElement} el - Element to animate
+ * @param {number|string} target - Target value
+ * @param {string} suffix - Optional suffix (e.g., '%')
+ */
+function animateCounter(el, target, suffix = "") {
+  if (!el) return;
+
+  const numTarget = parseInt(target) || 0;
+  if (numTarget === 0) {
+    el.textContent = `0${suffix}`;
+    return;
+  }
+
+  const duration = 800;
+  const startTime = performance.now();
+
+  function tick(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    // Ease-out cubic
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const current = Math.round(eased * numTarget);
+
+    el.textContent = `${current}${suffix}`;
+
+    if (progress < 1) {
+      requestAnimationFrame(tick);
+    }
+  }
+
+  requestAnimationFrame(tick);
+}
+
+/**
+ * Update statistic cards with animated counters
  * @param {Object} stats - Statistics data
  */
 function updateStatCards(stats) {
   // Total tasks
   const totalEl = document.getElementById("stat-total-tasks");
-  if (totalEl) totalEl.textContent = stats.total;
+  animateCounter(totalEl, stats.total);
 
   // Completed tasks
   const completedEl = document.getElementById("stat-completed-tasks");
-  if (completedEl) completedEl.textContent = stats.done;
+  animateCounter(completedEl, stats.done);
 
   // In progress tasks
   const inProgressEl = document.getElementById("stat-in-progress-tasks");
-  if (inProgressEl) inProgressEl.textContent = stats.inProgress;
+  animateCounter(inProgressEl, stats.inProgress);
 
   // Productivity score
   const productivityEl = document.getElementById("stat-productivity");
-  if (productivityEl)
-    productivityEl.textContent = `${stats.productivityScore}%`;
+  animateCounter(productivityEl, stats.productivityScore, "%");
 }
 
 /**
