@@ -10,7 +10,7 @@
 // =====================================================
 // HTTP STATUS CODES
 // =====================================================
-export const HTTP_STATUS = Object.freeze({
+export const HTTP_STATUS = Object({
   // Success
   OK: 200,
   CREATED: 201,
@@ -36,7 +36,7 @@ export const HTTP_STATUS = Object.freeze({
 // =====================================================
 // HTTP METHODS (RESTful conventions)
 // =====================================================
-export const HTTP_METHODS = Object.freeze({
+export const HTTP_METHODS = Object({
   GET: "GET",
   POST: "POST",
   PUT: "PUT",
@@ -47,7 +47,7 @@ export const HTTP_METHODS = Object.freeze({
 // =====================================================
 // API ROUTES
 // =====================================================
-export const API_ROUTES = Object.freeze({
+export const API_ROUTES = Object({
   // Authentication Server Routes
   AUTH: {
     LOGIN: "/api/auth/login",
@@ -75,13 +75,13 @@ export const API_ROUTES = Object.freeze({
 // =====================================================
 // TASK ENUMS
 // =====================================================
-export const TASK_STATUS = Object.freeze({
+export const TASK_STATUS = Object({
   TODO: "todo",
   IN_PROGRESS: "in-progress",
   DONE: "done",
 });
 
-export const TASK_PRIORITY = Object.freeze({
+export const TASK_PRIORITY = Object({
   LOW: "low",
   MEDIUM: "medium",
   HIGH: "high",
@@ -97,7 +97,7 @@ export const STATUS_ORDER = [
 // =====================================================
 // DATABASE CONFIGURATION
 // =====================================================
-export const DB_CONFIG = Object.freeze({
+export const DB_CONFIG = Object({
   // LocalStorage keys for our "databases"
   KEYS: {
     USERS: "taskmaster_users",
@@ -113,7 +113,7 @@ export const DB_CONFIG = Object.freeze({
 // =====================================================
 // NETWORK SIMULATION CONFIGURATION
 // =====================================================
-export const NETWORK_CONFIG = Object.freeze({
+export const NETWORK_CONFIG = Object({
   // Default latency range (ms)
   DEFAULT_MIN_LATENCY: 1000,
   DEFAULT_MAX_LATENCY: 3000,
@@ -132,7 +132,7 @@ export const NETWORK_CONFIG = Object.freeze({
 // =====================================================
 // FAJAX (Fake AJAX) CONSTANTS
 // =====================================================
-export const FAJAX_READY_STATE = Object.freeze({
+export const FAJAX_READY_STATE = Object({
   UNSENT: 0,
   OPENED: 1,
   HEADERS_RECEIVED: 2,
@@ -143,7 +143,7 @@ export const FAJAX_READY_STATE = Object.freeze({
 // =====================================================
 // VALIDATION RULES
 // =====================================================
-export const VALIDATION = Object.freeze({
+export const VALIDATION = Object({
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   PASSWORD_MIN_LENGTH: 6,
   PASSWORD_MAX_LENGTH: 100,
@@ -157,7 +157,7 @@ export const VALIDATION = Object.freeze({
 // =====================================================
 // TOAST NOTIFICATION TYPES
 // =====================================================
-export const TOAST_TYPES = Object.freeze({
+export const TOAST_TYPES = Object({
   SUCCESS: "success",
   ERROR: "error",
   WARNING: "warning",
@@ -170,7 +170,7 @@ export const TOAST_DURATION = 5000;
 // =====================================================
 // CLIENT ROUTES (for SPA Router)
 // =====================================================
-export const CLIENT_ROUTES = Object.freeze({
+export const CLIENT_ROUTES = Object({
   LOGIN: "/login",
   REGISTER: "/register",
   DASHBOARD: "/dashboard",
@@ -184,7 +184,7 @@ export const PUBLIC_ROUTES = [CLIENT_ROUTES.LOGIN, CLIENT_ROUTES.REGISTER];
 // =====================================================
 // ERROR MESSAGES
 // =====================================================
-export const ERROR_MESSAGES = Object.freeze({
+export const ERROR_MESSAGES = Object({
   // Auth errors
   INVALID_CREDENTIALS: "Invalid email or password",
   EMAIL_EXISTS: "An account with this email already exists",
@@ -217,7 +217,7 @@ export const ERROR_MESSAGES = Object.freeze({
 // =====================================================
 // SUCCESS MESSAGES
 // =====================================================
-export const SUCCESS_MESSAGES = Object.freeze({
+export const SUCCESS_MESSAGES = Object({
   LOGIN_SUCCESS: "Welcome back!",
   REGISTER_SUCCESS: "Account created successfully!",
   LOGOUT_SUCCESS: "You have been logged out",
