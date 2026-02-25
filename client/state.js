@@ -10,7 +10,7 @@
  * - Persistence to sessionStorage for page refreshes
  */
 
-import { deepClone } from "../../shared/constants.js";
+// Uses globals: deepClone from constants.js
 
 /**
  * Initial application state
@@ -424,9 +424,6 @@ class State {
   }
 }
 
-// Create and export singleton instance
-const state = new State();
-export default state;
-
-// Also export the class
-export { State };
+// Create singleton instance
+var state = new State();
+window.state = state;

@@ -11,14 +11,7 @@
  * They should NEVER import or use the Database class directly.
  */
 
-import database from "./database.js";
-import {
-  DB_CONFIG,
-  generateToken,
-  getCurrentTimestamp,
-  TASK_STATUS,
-  TASK_PRIORITY,
-} from "../shared/constants.js";
+// Uses globals: database, DB_CONFIG, generateToken, getCurrentTimestamp, TASK_STATUS, TASK_PRIORITY from constants.js
 
 /**
  * DBAPI - High-level database query interface
@@ -525,9 +518,6 @@ class DBAPI {
   }
 }
 
-// Create and export singleton instance
-const dbApi = new DBAPI();
-export default dbApi;
-
-// Also export the class for testing
-export { DBAPI };
+// Create singleton instance
+var dbApi = new DBAPI();
+window.dbApi = dbApi;

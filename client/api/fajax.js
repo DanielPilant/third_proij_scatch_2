@@ -11,13 +11,7 @@
  * All communication goes through the Network simulation layer.
  */
 
-import network from "../../network/network.js";
-import {
-  FAJAX_READY_STATE,
-  HTTP_STATUS,
-  NETWORK_CONFIG,
-  ERROR_MESSAGES,
-} from "../../shared/constants.js";
+// Uses globals: network, FAJAX_READY_STATE, HTTP_STATUS, NETWORK_CONFIG, ERROR_MESSAGES
 
 // =====================================================
 // FXMLHttpRequest - Fake XMLHttpRequest Implementation
@@ -124,17 +118,18 @@ class FXMLHttpRequest {
     this.readyState = FAJAX_READY_STATE.LOADING;
     this._notifyStateChange();
 
-    // Send through network layer
-    network
-      .send(request)
-      .then((response) => {
+    // Send through network layer using callbacks
+    network.send(
+      request,
+      (response) => {
         if (this._aborted) return;
         this._handleResponse(response);
-      })
-      .catch((error) => {
+      },
+      (error) => {
         if (this._aborted) return;
         this._handleError(error);
-      });
+      },
+    );
   }
 
   /**
@@ -348,9 +343,11 @@ class ApiClient {
    * @param {string} method - HTTP method
    * @param {string} url - Request URL
    * @param {Object} options - Request options
-   * @returns {Promise<Object>} Response data
+   * @param {Function} onSuccess - Success callback
+   * @param {Function} onError - Error callback
    */
-  async request(method, url, options = {}) {
+  request(method, url, options, onSuccess, onError) {
+    options = options || {};
     const { body, headers = {}, retries = 0 } = options;
 
     // Add auth header if token is set
@@ -364,89 +361,95 @@ class ApiClient {
       requestHeaders["Content-Type"] = "application/json";
     }
 
-    return new Promise((resolve, reject) => {
-      const xhr = new FXMLHttpRequest();
-      xhr.timeout = this.timeout;
+    const xhr = new FXMLHttpRequest();
+    xhr.timeout = this.timeout;
 
-      xhr.onload = () => {
-        // Parse response
-        let data;
-        try {
-          data =
-            typeof xhr.response === "string"
-              ? JSON.parse(xhr.response)
-              : xhr.response;
-        } catch (e) {
-          data = xhr.responseText;
-        }
+    xhr.onload = () => {
+      // Parse response
+      let data;
+      try {
+        data =
+          typeof xhr.response === "string"
+            ? JSON.parse(xhr.response)
+            : xhr.response;
+      } catch (e) {
+        data = xhr.responseText;
+      }
 
-        // Check for HTTP errors
-        if (xhr.status >= 200 && xhr.status < 300) {
-          resolve({
+      // Check for HTTP errors
+      if (xhr.status >= 200 && xhr.status < 300) {
+        onSuccess({
+          status: xhr.status,
+          data: data,
+        });
+      } else {
+        // HTTP error - don't retry for client errors (4xx)
+        if (xhr.status >= 400 && xhr.status < 500) {
+          onError({
             status: xhr.status,
             data: data,
+            message: data?.error?.message || "Request failed",
           });
         } else {
-          // HTTP error - don't retry for client errors (4xx)
-          if (xhr.status >= 400 && xhr.status < 500) {
-            reject({
+          // Server error - may retry
+          this._handleFailure(
+            method,
+            url,
+            options,
+            retries,
+            onSuccess,
+            onError,
+            {
               status: xhr.status,
-              data: data,
-              message: data?.error?.message || "Request failed",
-            });
-          } else {
-            // Server error - may retry
-            this._handleFailure(
-              method,
-              url,
-              options,
-              retries,
-              resolve,
-              reject,
-              {
-                status: xhr.status,
-                message: data?.error?.message || "Server error",
-              },
-            );
-          }
+              message: data?.error?.message || "Server error",
+            },
+          );
         }
-      };
+      }
+    };
 
-      xhr.onerror = (event) => {
-        // Network error - retry
-        this._handleFailure(method, url, options, retries, resolve, reject, {
-          status: 0,
-          message: ERROR_MESSAGES.NETWORK_ERROR,
-          dropped: event.error?.dropped,
-        });
-      };
-
-      xhr.ontimeout = () => {
-        // Timeout - retry
-        this._handleFailure(method, url, options, retries, resolve, reject, {
-          status: HTTP_STATUS.TIMEOUT,
-          message: ERROR_MESSAGES.REQUEST_TIMEOUT,
-        });
-      };
-
-      // Open and send request
-      xhr.open(method, url);
-
-      // Set headers
-      Object.entries(requestHeaders).forEach(([key, value]) => {
-        xhr.setRequestHeader(key, value);
+    xhr.onerror = (event) => {
+      // Network error - retry
+      this._handleFailure(method, url, options, retries, onSuccess, onError, {
+        status: 0,
+        message: ERROR_MESSAGES.NETWORK_ERROR,
+        dropped: event.error?.dropped,
       });
+    };
 
-      // Send with body if provided
-      xhr.send(body ? JSON.stringify(body) : null);
+    xhr.ontimeout = () => {
+      // Timeout - retry
+      this._handleFailure(method, url, options, retries, onSuccess, onError, {
+        status: HTTP_STATUS.TIMEOUT,
+        message: ERROR_MESSAGES.REQUEST_TIMEOUT,
+      });
+    };
+
+    // Open and send request
+    xhr.open(method, url);
+
+    // Set headers
+    Object.entries(requestHeaders).forEach(([key, value]) => {
+      xhr.setRequestHeader(key, value);
     });
+
+    // Send with body if provided
+    xhr.send(body ? JSON.stringify(body) : null);
   }
 
   /**
    * Handle request failure with retry logic
    * @private
    */
-  _handleFailure(method, url, options, currentRetries, resolve, reject, error) {
+  _handleFailure(
+    method,
+    url,
+    options,
+    currentRetries,
+    onSuccess,
+    onError,
+    error,
+  ) {
     if (currentRetries < this.maxRetries) {
       // Record retry in network stats
       network.recordRetry();
@@ -460,16 +463,20 @@ class ApiClient {
       this._dispatchRetryEvent(currentRetries + 1, this.maxRetries);
 
       setTimeout(() => {
-        this.request(method, url, {
-          ...options,
-          retries: currentRetries + 1,
-        })
-          .then(resolve)
-          .catch(reject);
+        this.request(
+          method,
+          url,
+          {
+            ...options,
+            retries: currentRetries + 1,
+          },
+          onSuccess,
+          onError,
+        );
       }, delay);
     } else {
       console.log("[ApiClient] Max retries exceeded");
-      reject({
+      onError({
         ...error,
         message: ERROR_MESSAGES.MAX_RETRIES_EXCEEDED,
         retriesExhausted: true,
@@ -510,60 +517,61 @@ class ApiClient {
   /**
    * Make a GET request
    * @param {string} url - Request URL
-   * @param {Object} options - Request options
-   * @returns {Promise<Object>} Response
+   * @param {Function} onSuccess - Success callback
+   * @param {Function} onError - Error callback
    */
-  get(url, options = {}) {
-    return this.request("GET", url, options);
+  get(url, onSuccess, onError) {
+    this.request("GET", url, {}, onSuccess, onError);
   }
 
   /**
    * Make a POST request
    * @param {string} url - Request URL
    * @param {Object} body - Request body
-   * @param {Object} options - Additional options
-   * @returns {Promise<Object>} Response
+   * @param {Function} onSuccess - Success callback
+   * @param {Function} onError - Error callback
    */
-  post(url, body, options = {}) {
-    return this.request("POST", url, { ...options, body });
+  post(url, body, onSuccess, onError) {
+    this.request("POST", url, { body }, onSuccess, onError);
   }
 
   /**
    * Make a PUT request
    * @param {string} url - Request URL
    * @param {Object} body - Request body
-   * @param {Object} options - Additional options
-   * @returns {Promise<Object>} Response
+   * @param {Function} onSuccess - Success callback
+   * @param {Function} onError - Error callback
    */
-  put(url, body, options = {}) {
-    return this.request("PUT", url, { ...options, body });
+  put(url, body, onSuccess, onError) {
+    this.request("PUT", url, { body }, onSuccess, onError);
   }
 
   /**
    * Make a DELETE request
    * @param {string} url - Request URL
-   * @param {Object} options - Request options
-   * @returns {Promise<Object>} Response
+   * @param {Function} onSuccess - Success callback
+   * @param {Function} onError - Error callback
    */
-  delete(url, options = {}) {
-    return this.request("DELETE", url, options);
+  delete(url, onSuccess, onError) {
+    this.request("DELETE", url, {}, onSuccess, onError);
   }
 
   /**
    * Make a PATCH request
    * @param {string} url - Request URL
    * @param {Object} body - Request body
-   * @param {Object} options - Additional options
-   * @returns {Promise<Object>} Response
+   * @param {Function} onSuccess - Success callback
+   * @param {Function} onError - Error callback
    */
-  patch(url, body, options = {}) {
-    return this.request("PATCH", url, { ...options, body });
+  patch(url, body, onSuccess, onError) {
+    this.request("PATCH", url, { body }, onSuccess, onError);
   }
 }
 
 // Create singleton API client instance
-const api = new ApiClient();
+var api = new ApiClient();
 
-// Export both the class and singleton
-export { FXMLHttpRequest, ApiClient };
-export default api;
+// Expose to global scope
+window.FXMLHttpRequest = FXMLHttpRequest;
+window.ApiClient = ApiClient;
+window.api = api;

@@ -13,19 +13,7 @@
  * All endpoints are protected by AuthMiddleware.
  */
 
-import dbApi from "../../db/dbApi.js";
-import authMiddleware from "../middleware/authMiddleware.js";
-import {
-  HTTP_STATUS,
-  HTTP_METHODS,
-  API_ROUTES,
-  ERROR_MESSAGES,
-  SUCCESS_MESSAGES,
-  VALIDATION,
-  TASK_STATUS,
-  TASK_PRIORITY,
-  STATUS_ORDER,
-} from "../../shared/constants.js";
+// Uses globals: dbApi, authMiddleware, HTTP_STATUS, HTTP_METHODS, API_ROUTES, ERROR_MESSAGES, SUCCESS_MESSAGES, VALIDATION, TASK_STATUS, TASK_PRIORITY, STATUS_ORDER
 
 /**
  * AppServer class
@@ -552,9 +540,6 @@ class AppServer {
   }
 }
 
-// Export singleton instance
-const appServer = new AppServer();
-export default appServer;
-
-// Also export the class
-export { AppServer };
+// Create singleton instance
+var appServer = new AppServer();
+window.appServer = appServer;

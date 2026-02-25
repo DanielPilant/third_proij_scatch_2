@@ -11,11 +11,7 @@
  * DBAPI class to interact with data - never localStorage directly.
  */
 
-import {
-  DB_CONFIG,
-  generateId,
-  getCurrentTimestamp,
-} from "../shared/constants.js";
+// Uses globals: DB_CONFIG, generateId, getCurrentTimestamp from constants.js
 
 /**
  * Database class - Low level localStorage operations
@@ -383,10 +379,5 @@ class Database {
 }
 
 // Create singleton instance
-const database = new Database();
-
-// Export singleton - this ensures only one instance exists
-export default database;
-
-// Also export the class for testing purposes
-export { Database };
+var database = new Database();
+window.database = database;

@@ -11,24 +11,10 @@
  * - Handles global events
  */
 
-// Import core modules
-import state from "./state.js";
-import router from "./router.js";
-import api from "./api/fajax.js";
-import network from "../network/network.js";
-
-// Import shared constants
-import { CLIENT_ROUTES, API_ROUTES, TOAST_TYPES } from "../shared/constants.js";
-
-// Import UI components
-import { showToast } from "./components/toast.js";
-import { renderNavbar, hideNavbar } from "./components/navbar.js";
-
-// Import page handlers
-import { renderLoginPage, initLoginPage } from "./pages/login.js";
-import { renderRegisterPage, initRegisterPage } from "./pages/register.js";
-import { renderDashboardPage, initDashboardPage } from "./pages/dashboard.js";
-import { renderTasksPage, initTasksPage } from "./pages/tasks.js";
+// Uses globals: state, router, api, network, CLIENT_ROUTES, API_ROUTES, TOAST_TYPES,
+//   showToast, renderNavbar, hideNavbar, renderLoginPage, initLoginPage,
+//   renderRegisterPage, initRegisterPage, renderDashboardPage, initDashboardPage,
+//   renderTasksPage, initTasksPage
 
 /**
  * TaskMaster Pro Application
@@ -42,14 +28,12 @@ class App {
   /**
    * Initialize the application
    */
-  async init() {
-    try {
-      // 1. Setup API client with stored token
-      this._setupApiClient();
+  init() {
+    // 1. Setup API client with stored token
+    this._setupApiClient();
 
-      // 2. Validate existing session if any
-      await this._validateSession();
-
+    // 2. Validate existing session if any (uses callback)
+    this._validateSession(() => {
       // 3. Setup router with routes
       this._setupRouter();
 
@@ -63,10 +47,7 @@ class App {
       router.init("#view-container");
 
       console.log("[App] Initialization complete");
-    } catch (error) {
-      console.error("[App] Initialization failed:", error);
-      showToast("Failed to initialize application", TOAST_TYPES.ERROR);
-    }
+    });
   }
 
   /**
@@ -83,31 +64,38 @@ class App {
 
   /**
    * Validate existing session with the server
+   * @param {Function} callback - Called when validation completes
    * @private
    */
-  async _validateSession() {
+  _validateSession(callback) {
     if (!state.isAuthenticated()) {
+      callback();
       return;
     }
 
     console.log("[App] Validating existing session...");
 
-    try {
-      const response = await api.get(API_ROUTES.AUTH.VALIDATE);
-
-      if (response.data?.valid) {
-        console.log("[App] Session is valid");
-        // Update user data if changed
-        if (response.data?.data?.user) {
-          state.set("auth.user", response.data.data.user);
+    api.get(
+      API_ROUTES.AUTH.VALIDATE,
+      (response) => {
+        if (response.data?.valid) {
+          console.log("[App] Session is valid");
+          // Update user data if changed
+          if (response.data?.data?.user) {
+            state.set("auth.user", response.data.data.user);
+          }
+        } else {
+          console.log("[App] Session invalid, clearing auth state");
+          this._handleLogout(false);
         }
-      } else {
-        throw new Error("Invalid session");
-      }
-    } catch (error) {
-      console.log("[App] Session invalid, clearing auth state");
-      this._handleLogout(false);
-    }
+        callback();
+      },
+      (error) => {
+        console.log("[App] Session invalid, clearing auth state");
+        this._handleLogout(false);
+        callback();
+      },
+    );
   }
 
   /**
@@ -308,28 +296,36 @@ class App {
    * @param {boolean} showMessage - Whether to show toast message
    * @private
    */
-  async _handleLogout(showMessage = true) {
-    try {
-      // Call logout endpoint
-      await api.post(API_ROUTES.AUTH.LOGOUT);
-    } catch (error) {
-      // Ignore errors - we'll clear state anyway
-      console.log("[App] Logout request failed (may be expected)");
-    }
+  _handleLogout(showMessage = true) {
+    const afterLogout = () => {
+      // Clear client state
+      api.clearToken();
+      state.clearAuth();
+      state.reset("tasks");
+      state.reset("stats");
+      state.clearPersisted();
 
-    // Clear client state
-    api.clearToken();
-    state.clearAuth();
-    state.reset("tasks");
-    state.reset("stats");
-    state.clearPersisted();
+      if (showMessage) {
+        showToast("Logged out successfully", TOAST_TYPES.SUCCESS);
+      }
 
-    if (showMessage) {
-      showToast("Logged out successfully", TOAST_TYPES.SUCCESS);
-    }
+      // Navigate to login
+      router.navigate(CLIENT_ROUTES.LOGIN);
+    };
 
-    // Navigate to login
-    router.navigate(CLIENT_ROUTES.LOGIN);
+    // Call logout endpoint (fire-and-forget style)
+    api.post(
+      API_ROUTES.AUTH.LOGOUT,
+      null,
+      function () {
+        afterLogout();
+      },
+      function () {
+        // Ignore errors - we'll clear state anyway
+        console.log("[App] Logout request failed (may be expected)");
+        afterLogout();
+      },
+    );
   }
 
   /**
@@ -374,4 +370,4 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 });
 
-export { App };
+window.App = App;

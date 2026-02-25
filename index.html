@@ -991,8 +991,43 @@
     </template>
 
     <!-- =====================================================
-         APPLICATION ENTRY POINT
+         APPLICATION SCRIPTS (loaded sequentially)
          ===================================================== -->
-    <script type="module" src="client/app.js"></script>
+    <!-- Shared constants (no dependencies) -->
+    <script src="shared/constants.js"></script>
+
+    <!-- Database layer -->
+    <script src="db/database.js"></script>
+    <script src="db/dbApi.js"></script>
+
+    <!-- Server layer -->
+    <script src="server/middleware/authMiddleware.js"></script>
+    <script src="server/auth/authServer.js"></script>
+    <script src="server/app/appServer.js"></script>
+    <script src="server/dispatcher.js"></script>
+
+    <!-- Network simulation -->
+    <script src="network/network.js"></script>
+
+    <!-- Client: FAJAX API layer -->
+    <script src="client/api/fajax.js"></script>
+
+    <!-- Client: State and Router -->
+    <script src="client/state.js"></script>
+    <script src="client/router.js"></script>
+
+    <!-- Client: UI Components -->
+    <script src="client/components/toast.js"></script>
+    <script src="client/components/navbar.js"></script>
+    <script src="client/components/taskCard.js"></script>
+
+    <!-- Client: Pages -->
+    <script src="client/pages/login.js"></script>
+    <script src="client/pages/register.js"></script>
+    <script src="client/pages/dashboard.js"></script>
+    <script src="client/pages/tasks.js"></script>
+
+    <!-- Client: Application entry point -->
+    <script src="client/app.js"></script>
   </body>
 </html>

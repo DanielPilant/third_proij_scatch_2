@@ -12,8 +12,7 @@
  * Requests pass through here to experience simulated network conditions.
  */
 
-import serverDispatcher from "../server/dispatcher.js";
-import { NETWORK_CONFIG, HTTP_STATUS } from "../shared/constants.js";
+// Uses globals: serverDispatcher, NETWORK_CONFIG, HTTP_STATUS
 
 /**
  * Network class - Simulates network conditions
@@ -48,70 +47,69 @@ class Network {
   /**
    * Send a request through the simulated network
    * @param {Object} request - The request to send
-   * @returns {Promise<Object>} Response or error
+   * @param {Function} onSuccess - Callback on successful response
+   * @param {Function} onError - Callback on error
    */
-  send(request) {
-    return new Promise((resolve, reject) => {
-      this.stats.totalRequests++;
-      this._notifyStatsListeners();
+  send(request, onSuccess, onError) {
+    this.stats.totalRequests++;
+    this._notifyStatsListeners();
 
-      console.log(
-        `[${this.name}] Processing request #${this.stats.totalRequests}: ${request.method} ${request.url}`,
-      );
+    console.log(
+      `[${this.name}] Processing request #${this.stats.totalRequests}: ${request.method} ${request.url}`,
+    );
 
-      // Calculate random latency
-      const latency = this._calculateLatency();
-      console.log(`[${this.name}] Simulated latency: ${latency}ms`);
+    // Calculate random latency
+    const latency = this._calculateLatency();
+    console.log(`[${this.name}] Simulated latency: ${latency}ms`);
 
-      // Update average latency
-      this.stats._latencySum += latency;
-      this.stats.averageLatency = Math.round(
-        this.stats._latencySum / this.stats.totalRequests,
-      );
+    // Update average latency
+    this.stats._latencySum += latency;
+    this.stats.averageLatency = Math.round(
+      this.stats._latencySum / this.stats.totalRequests,
+    );
 
-      // Simulate network delay
-      setTimeout(() => {
-        // Check for packet drop
-        if (this._shouldDropPacket()) {
-          this.stats.droppedPackets++;
-          this._notifyStatsListeners();
+    // Simulate network delay
+    setTimeout(() => {
+      // Check for packet drop
+      if (this._shouldDropPacket()) {
+        this.stats.droppedPackets++;
+        this._notifyStatsListeners();
 
-          console.log(
-            `[${this.name}] PACKET DROPPED! (${this.stats.droppedPackets} total drops)`,
-          );
+        console.log(
+          `[${this.name}] PACKET DROPPED! (${this.stats.droppedPackets} total drops)`,
+        );
 
-          // Reject with network error
-          reject({
-            type: "NETWORK_ERROR",
-            status: HTTP_STATUS.NETWORK_ERROR,
-            message: "Network request failed (packet dropped)",
-            dropped: true,
-          });
-          return;
-        }
+        // Call error callback with network error
+        onError({
+          type: "NETWORK_ERROR",
+          status: HTTP_STATUS.NETWORK_ERROR,
+          message: "Network request failed (packet dropped)",
+          dropped: true,
+        });
+        return;
+      }
 
-        // Packet made it through - dispatch to server
-        try {
-          console.log(`[${this.name}] Dispatching to server...`);
-          const response = serverDispatcher.dispatch(request);
+      // Packet made it through - dispatch to server
+      try {
+        console.log(`[${this.name}] Dispatching to server...`);
+        const response = serverDispatcher.dispatch(request);
 
-          this.stats.successfulRequests++;
-          this._notifyStatsListeners();
+        this.stats.successfulRequests++;
+        this._notifyStatsListeners();
 
-          console.log(
-            `[${this.name}] Request successful, status: ${response.status}`,
-          );
-          resolve(response);
-        } catch (error) {
-          console.error(`[${this.name}] Server error:`, error);
-          reject({
-            type: "SERVER_ERROR",
-            status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
-            message: error.message || "Server error",
-          });
-        }
-      }, latency);
-    });
+        console.log(
+          `[${this.name}] Request successful, status: ${response.status}`,
+        );
+        onSuccess(response);
+      } catch (error) {
+        console.error(`[${this.name}] Server error:`, error);
+        onError({
+          type: "SERVER_ERROR",
+          status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
+          message: error.message || "Server error",
+        });
+      }
+    }, latency);
   }
 
   /**
@@ -242,9 +240,6 @@ class Network {
   }
 }
 
-// Create and export singleton instance
-const network = new Network();
-export default network;
-
-// Also export the class
-export { Network };
+// Create singleton instance
+var network = new Network();
+window.network = network;

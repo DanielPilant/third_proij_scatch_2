@@ -11,8 +11,7 @@
  * - Navigation history
  */
 
-import state from "./state.js";
-import { CLIENT_ROUTES, PUBLIC_ROUTES } from "../shared/constants.js";
+// Uses globals: state, CLIENT_ROUTES, PUBLIC_ROUTES from constants.js
 
 /**
  * Router class - Client-side hash-based routing
@@ -327,9 +326,6 @@ class Router {
   }
 }
 
-// Create and export singleton instance
-const router = new Router();
-export default router;
-
-// Also export the class
-export { Router };
+// Create singleton instance
+var router = new Router();
+window.router = router;

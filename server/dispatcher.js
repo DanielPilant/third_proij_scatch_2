@@ -10,9 +10,7 @@
  * requests to different microservices based on the URL path.
  */
 
-import authServer from "./auth/authServer.js";
-import appServer from "./app/appServer.js";
-import { HTTP_STATUS, API_ROUTES } from "../shared/constants.js";
+// Uses globals: authServer, appServer, HTTP_STATUS, API_ROUTES
 
 /**
  * ServerDispatcher class
@@ -264,9 +262,6 @@ class ServerDispatcher {
   }
 }
 
-// Export singleton instance
-const serverDispatcher = new ServerDispatcher();
-export default serverDispatcher;
-
-// Also export the class
-export { ServerDispatcher };
+// Create singleton instance
+var serverDispatcher = new ServerDispatcher();
+window.serverDispatcher = serverDispatcher;

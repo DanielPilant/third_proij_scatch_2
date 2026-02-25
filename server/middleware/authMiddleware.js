@@ -10,8 +10,7 @@
  * like JWT verification in Express.js.
  */
 
-import dbApi from "../../db/dbApi.js";
-import { HTTP_STATUS, ERROR_MESSAGES } from "../../shared/constants.js";
+// Uses globals: dbApi, HTTP_STATUS, ERROR_MESSAGES
 
 /**
  * AuthMiddleware class
@@ -130,9 +129,6 @@ class AuthMiddleware {
   }
 }
 
-// Export singleton instance
-const authMiddleware = new AuthMiddleware();
-export default authMiddleware;
-
-// Also export the class
-export { AuthMiddleware };
+// Create singleton instance
+var authMiddleware = new AuthMiddleware();
+window.authMiddleware = authMiddleware;

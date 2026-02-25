@@ -1,4 +1,4 @@
-/**
+﻿/**
  * =====================================================
  * SHARED CONSTANTS
  * =====================================================
@@ -10,7 +10,7 @@
 // =====================================================
 // HTTP STATUS CODES
 // =====================================================
-export const HTTP_STATUS = Object({
+var HTTP_STATUS = Object({
   // Success
   OK: 200,
   CREATED: 201,
@@ -36,7 +36,7 @@ export const HTTP_STATUS = Object({
 // =====================================================
 // HTTP METHODS (RESTful conventions)
 // =====================================================
-export const HTTP_METHODS = Object({
+var HTTP_METHODS = Object({
   GET: "GET",
   POST: "POST",
   PUT: "PUT",
@@ -47,7 +47,7 @@ export const HTTP_METHODS = Object({
 // =====================================================
 // API ROUTES
 // =====================================================
-export const API_ROUTES = Object({
+var API_ROUTES = Object({
   // Authentication Server Routes
   AUTH: {
     LOGIN: "/api/auth/login",
@@ -75,20 +75,20 @@ export const API_ROUTES = Object({
 // =====================================================
 // TASK ENUMS
 // =====================================================
-export const TASK_STATUS = Object({
+var TASK_STATUS = Object({
   TODO: "todo",
   IN_PROGRESS: "in-progress",
   DONE: "done",
 });
 
-export const TASK_PRIORITY = Object({
+var TASK_PRIORITY = Object({
   LOW: "low",
   MEDIUM: "medium",
   HIGH: "high",
 });
 
 // Status flow order for navigation
-export const STATUS_ORDER = [
+var STATUS_ORDER = [
   TASK_STATUS.TODO,
   TASK_STATUS.IN_PROGRESS,
   TASK_STATUS.DONE,
@@ -97,7 +97,7 @@ export const STATUS_ORDER = [
 // =====================================================
 // DATABASE CONFIGURATION
 // =====================================================
-export const DB_CONFIG = Object({
+var DB_CONFIG = Object({
   // LocalStorage keys for our "databases"
   KEYS: {
     USERS: "taskmaster_users",
@@ -113,7 +113,7 @@ export const DB_CONFIG = Object({
 // =====================================================
 // NETWORK SIMULATION CONFIGURATION
 // =====================================================
-export const NETWORK_CONFIG = Object({
+var NETWORK_CONFIG = Object({
   // Default latency range (ms)
   DEFAULT_MIN_LATENCY: 1000,
   DEFAULT_MAX_LATENCY: 3000,
@@ -132,7 +132,7 @@ export const NETWORK_CONFIG = Object({
 // =====================================================
 // FAJAX (Fake AJAX) CONSTANTS
 // =====================================================
-export const FAJAX_READY_STATE = Object({
+var FAJAX_READY_STATE = Object({
   UNSENT: 0,
   OPENED: 1,
   HEADERS_RECEIVED: 2,
@@ -143,7 +143,7 @@ export const FAJAX_READY_STATE = Object({
 // =====================================================
 // VALIDATION RULES
 // =====================================================
-export const VALIDATION = Object({
+var VALIDATION = Object({
   EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
   PASSWORD_MIN_LENGTH: 6,
   PASSWORD_MAX_LENGTH: 100,
@@ -157,7 +157,7 @@ export const VALIDATION = Object({
 // =====================================================
 // TOAST NOTIFICATION TYPES
 // =====================================================
-export const TOAST_TYPES = Object({
+var TOAST_TYPES = Object({
   SUCCESS: "success",
   ERROR: "error",
   WARNING: "warning",
@@ -165,12 +165,12 @@ export const TOAST_TYPES = Object({
 });
 
 // Toast duration in milliseconds
-export const TOAST_DURATION = 5000;
+var TOAST_DURATION = 5000;
 
 // =====================================================
 // CLIENT ROUTES (for SPA Router)
 // =====================================================
-export const CLIENT_ROUTES = Object({
+var CLIENT_ROUTES = Object({
   LOGIN: "/login",
   REGISTER: "/register",
   DASHBOARD: "/dashboard",
@@ -179,12 +179,12 @@ export const CLIENT_ROUTES = Object({
 });
 
 // Routes that don't require authentication
-export const PUBLIC_ROUTES = [CLIENT_ROUTES.LOGIN, CLIENT_ROUTES.REGISTER];
+var PUBLIC_ROUTES = [CLIENT_ROUTES.LOGIN, CLIENT_ROUTES.REGISTER];
 
 // =====================================================
 // ERROR MESSAGES
 // =====================================================
-export const ERROR_MESSAGES = Object({
+var ERROR_MESSAGES = Object({
   // Auth errors
   INVALID_CREDENTIALS: "Invalid email or password",
   EMAIL_EXISTS: "An account with this email already exists",
@@ -217,7 +217,7 @@ export const ERROR_MESSAGES = Object({
 // =====================================================
 // SUCCESS MESSAGES
 // =====================================================
-export const SUCCESS_MESSAGES = Object({
+var SUCCESS_MESSAGES = Object({
   LOGIN_SUCCESS: "Welcome back!",
   REGISTER_SUCCESS: "Account created successfully!",
   LOGOUT_SUCCESS: "You have been logged out",
@@ -235,7 +235,7 @@ export const SUCCESS_MESSAGES = Object({
  * Generates a unique ID (UUID v4 format)
  * @returns {string} A unique identifier
  */
-export function generateId() {
+function generateId() {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
     const v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -247,7 +247,7 @@ export function generateId() {
  * Generates a session token
  * @returns {string} A session token
  */
-export function generateToken() {
+function generateToken() {
   return DB_CONFIG.TOKEN_PREFIX + generateId() + "_" + Date.now();
 }
 
@@ -255,7 +255,7 @@ export function generateToken() {
  * Gets current timestamp in ISO format
  * @returns {string} ISO timestamp
  */
-export function getCurrentTimestamp() {
+function getCurrentTimestamp() {
   return new Date().toISOString();
 }
 
@@ -264,7 +264,7 @@ export function getCurrentTimestamp() {
  * @param {string} email - The email to validate
  * @returns {boolean} True if valid
  */
-export function isValidEmail(email) {
+function isValidEmail(email) {
   return VALIDATION.EMAIL_REGEX.test(email);
 }
 
@@ -273,7 +273,7 @@ export function isValidEmail(email) {
  * @param {string} dateString - ISO date string
  * @returns {string} Formatted date
  */
-export function formatDate(dateString) {
+function formatDate(dateString) {
   if (!dateString) return "";
   const date = new Date(dateString);
   return date.toLocaleDateString("en-US", {
@@ -288,7 +288,7 @@ export function formatDate(dateString) {
  * @param {string} dateString - ISO date string
  * @returns {string} Relative time string
  */
-export function formatRelativeDate(dateString) {
+function formatRelativeDate(dateString) {
   if (!dateString) return "";
 
   const date = new Date(dateString);
@@ -311,7 +311,7 @@ export function formatRelativeDate(dateString) {
  * @param {string} dueDate - ISO date string
  * @returns {number} Days until due (negative if overdue)
  */
-export function getDaysUntilDue(dueDate) {
+function getDaysUntilDue(dueDate) {
   if (!dueDate) return null;
   const due = new Date(dueDate);
   const now = new Date();
@@ -324,12 +324,12 @@ export function getDaysUntilDue(dueDate) {
  * @param {Object} obj - Object to clone
  * @returns {Object} Cloned object
  */
-export function deepClone(obj) {
+function deepClone(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
 
 // Export a frozen config object for easy access
-export const CONFIG = Object.freeze({
+var CONFIG = Object.freeze({
   APP_NAME: "TaskMaster Pro",
   VERSION: "1.0.0",
   DEBUG: true,

@@ -12,16 +12,7 @@
  * This simulates a dedicated authentication microservice.
  */
 
-import dbApi from "../../db/dbApi.js";
-import {
-  HTTP_STATUS,
-  HTTP_METHODS,
-  API_ROUTES,
-  ERROR_MESSAGES,
-  SUCCESS_MESSAGES,
-  VALIDATION,
-  isValidEmail,
-} from "../../shared/constants.js";
+// Uses globals: dbApi, HTTP_STATUS, HTTP_METHODS, API_ROUTES, ERROR_MESSAGES, SUCCESS_MESSAGES, VALIDATION, isValidEmail
 
 /**
  * AuthServer class
@@ -395,9 +386,6 @@ class AuthServer {
   }
 }
 
-// Export singleton instance
-const authServer = new AuthServer();
-export default authServer;
-
-// Also export the class
-export { AuthServer };
+// Create singleton instance
+var authServer = new AuthServer();
+window.authServer = authServer;
