@@ -8,7 +8,7 @@
  */
 
 // Uses globals: api, state, router, showToast, API_ROUTES, CLIENT_ROUTES, TOAST_TYPES, VALIDATION, isValidEmail, ERROR_MESSAGES, SUCCESS_MESSAGES
-
+// IIFE to encapsulate login page logic and avoid global scope pollution
 (function () {
   /**
    * Render the login page
@@ -41,16 +41,14 @@
     setupPasswordToggle();
 
     // Setup form validation on input (real-time with debounce)
-    emailInput?.addEventListener("blur", () => validateEmail(emailInput));
+    emailInput.addEventListener("blur", () => validateEmail(emailInput));
     passwordInput?.addEventListener("blur", () =>
       validatePassword(passwordInput),
     );
 
     // Clear errors on focus
-    emailInput?.addEventListener("focus", () =>
-      clearError("login-email-error"),
-    );
-    passwordInput?.addEventListener("focus", () =>
+    emailInput.addEventListener("focus", () => clearError("login-email-error"));
+    passwordInput.addEventListener("focus", () =>
       clearError("login-password-error"),
     );
 
@@ -58,7 +56,7 @@
     setTimeout(() => emailInput?.focus(), 300);
 
     // Allow Enter key in password to submit
-    passwordInput?.addEventListener("keydown", (e) => {
+    passwordInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
         form.requestSubmit();
       }
@@ -68,10 +66,6 @@
     form.addEventListener("submit", handleLoginSubmit);
   }
 
-  /**
-   * Handle login form submission
-   * @param {Event} event - Submit event
-   */
   function handleLoginSubmit(event) {
     event.preventDefault();
 

@@ -10,7 +10,7 @@
 // =====================================================
 // HTTP STATUS CODES
 // =====================================================
-var HTTP_STATUS = Object({
+var HTTP_STATUS = {
   // Success
   OK: 200,
   CREATED: 201,
@@ -31,23 +31,23 @@ var HTTP_STATUS = Object({
   // Custom Network Simulation
   NETWORK_ERROR: 0,
   TIMEOUT: 408,
-});
+};
 
 // =====================================================
 // HTTP METHODS (RESTful conventions)
 // =====================================================
-var HTTP_METHODS = Object({
+var HTTP_METHODS = {
   GET: "GET",
   POST: "POST",
   PUT: "PUT",
   DELETE: "DELETE",
   PATCH: "PATCH",
-});
+};
 
 // =====================================================
 // API ROUTES
 // =====================================================
-var API_ROUTES = Object({
+var API_ROUTES = {
   // Authentication Server Routes
   AUTH: {
     LOGIN: "/api/auth/login",
@@ -70,7 +70,7 @@ var API_ROUTES = Object({
     PROFILE: "/api/users/profile",
     UPDATE: "/api/users/update",
   },
-});
+};
 
 // =====================================================
 // TASK ENUMS

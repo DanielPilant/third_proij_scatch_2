@@ -176,25 +176,20 @@
               </p>
             </div>
             <form id="login-form" class="auth-form" novalidate>
+              <!--Email input-->
               <div class="form-group">
                 <label for="login-email">Email Address</label>
-                <div class="input-icon-wrapper">
-                  <span class="input-icon">&#9993;</span>
-                  <input
-                    type="email"
-                    id="login-email"
-                    name="email"
-                    placeholder="Enter your email"
-                    required
-                    autocomplete="email"
-                  />
-                </div>
-                <span
-                  class="form-error"
-                  id="login-email-error"
-                  role="alert"
-                ></span>
+                <input
+                  type="email"
+                  id="login-email"
+                  name="email"
+                  placeholder="Enter your email"
+                  required
+                  autocomplete="email"
+                />
+                <span class="form-error" id="login-email-error"></span>
               </div>
+              <!--Password input with visibility toggle-->
               <div class="form-group">
                 <label for="login-password">Password</label>
                 <div class="password-input-wrapper">
@@ -228,7 +223,7 @@
                   <span class="btn-loader hidden"></span>
                 </button>
               </div>
-              <div class="form-footer">
+              <div z="form-footer">
                 <p>
                   Don't have an account?
                   <a href="#/register" class="auth-link">Create one</a>
