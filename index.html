@@ -33,94 +33,13 @@
 
       <!-- Main content area where views are rendered -->
       <main id="view-container"></main>
-
-      <!-- Toast notification container -->
-      <div id="toast-container"></div>
-
-      <!-- Developer Panel for testing network conditions -->
-      <div id="dev-panel" class="dev-panel hidden">
-        <div class="dev-panel-header">
-          <h3>🛠️ Developer Panel</h3>
-          <button id="dev-panel-toggle" class="dev-panel-close">×</button>
-        </div>
-        <div class="dev-panel-body">
-          <div class="dev-control">
-            <label for="latency-min">Min Latency (ms):</label>
-            <input
-              type="range"
-              id="latency-min"
-              min="100"
-              max="3000"
-              value="1000"
-            />
-            <span id="latency-min-value">1000ms</span>
-          </div>
-          <div class="dev-control">
-            <label for="latency-max">Max Latency (ms):</label>
-            <input
-              type="range"
-              id="latency-max"
-              min="100"
-              max="5000"
-              value="3000"
-            />
-            <span id="latency-max-value">3000ms</span>
-          </div>
-          <div class="dev-control">
-            <label for="drop-rate">Packet Drop Rate (%):</label>
-            <input type="range" id="drop-rate" min="0" max="80" value="20" />
-            <span id="drop-rate-value">20%</span>
-          </div>
-          <div class="dev-control">
-            <label for="max-retries">Max Retries:</label>
-            <input type="number" id="max-retries" min="1" max="10" value="3" />
-          </div>
-          <div class="dev-stats">
-            <h4>Network Statistics</h4>
-            <p>Requests Made: <span id="stat-requests">0</span></p>
-            <p>Packets Dropped: <span id="stat-dropped">0</span></p>
-            <p>Successful: <span id="stat-success">0</span></p>
-            <p>Retries: <span id="stat-retries">0</span></p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Floating button to toggle dev panel -->
-      <button
-        id="dev-panel-fab"
-        class="dev-fab"
-        title="Toggle Developer Panel"
-        aria-label="Toggle Developer Panel"
-      >
-        ⚙️
-      </button>
-
-      <!-- Keyboard shortcuts hint -->
-      <div class="keyboard-shortcuts-hint hidden" id="shortcuts-hint">
-        <div class="shortcuts-header">
-          <h4>Keyboard Shortcuts</h4>
-          <button class="shortcuts-close" id="shortcuts-close">×</button>
-        </div>
-        <div class="shortcuts-list">
-          <div class="shortcut-item"><span class="kbd">N</span> New task</div>
-          <div class="shortcut-item">
-            <span class="kbd">/</span> Search tasks
-          </div>
-          <div class="shortcut-item">
-            <span class="kbd">Esc</span> Close modal
-          </div>
-          <div class="shortcut-item">
-            <span class="kbd">?</span> Show shortcuts
-          </div>
-        </div>
-      </div>
     </div>
 
     <!-- =====================================================
          HTML TEMPLATES (Using <template> tags as required)
          ===================================================== -->
 
-    <!-- Login Page Template -->
+    <!-- ==== Login Page Template ==== -->
     <template id="template-login">
       <div class="auth-page">
         <div class="floating-shapes">
@@ -129,108 +48,63 @@
           <div class="floating-shape shape-3"></div>
           <div class="floating-shape shape-4"></div>
         </div>
-        <div class="auth-split">
-          <div class="auth-showcase">
-            <div class="showcase-content">
-              <div class="showcase-badge">Welcome to TaskMaster</div>
-              <h2 class="showcase-title">
-                Organize your work,<br />amplify your life.
-              </h2>
-              <p class="showcase-desc">
-                Join thousands of teams who use TaskMaster Pro to manage their
-                tasks efficiently.
-              </p>
-              <div class="showcase-features">
-                <div class="showcase-feature">
-                  <span class="feature-icon">📊</span>
-                  <div>
-                    <strong>Visual Dashboards</strong>
-                    <p>Track progress with beautiful charts</p>
-                  </div>
-                </div>
-                <div class="showcase-feature">
-                  <span class="feature-icon">📋</span>
-                  <div>
-                    <strong>Kanban Boards</strong>
-                    <p>Drag tasks between statuses effortlessly</p>
-                  </div>
-                </div>
-                <div class="showcase-feature">
-                  <span class="feature-icon">⚡</span>
-                  <div>
-                    <strong>Real-time Updates</strong>
-                    <p>Stay in sync with your team instantly</p>
-                  </div>
-                </div>
-              </div>
+        <div class="auth-card">
+          <!-- Auth header -->
+          <div class="auth-header">
+            <div class="auth-logo">
+              <span class="logo-icon">✓</span>
+              <h1>TaskMaster Pro</h1>
             </div>
+            <p class="auth-subtitle">
+              Welcome back! Please sign in to continue.
+            </p>
           </div>
-          <div class="auth-card">
-            <div class="auth-header">
-              <div class="auth-logo">
-                <span class="logo-icon">✓</span>
-                <h1>TaskMaster Pro</h1>
-              </div>
-              <p class="auth-subtitle">
-                Welcome back! Please sign in to continue.
+          <form id="login-form" class="auth-form" novalidate>
+            <!--Email input-->
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input
+                type="email"
+                id="login-email"
+                name="email"
+                placeholder="Enter your email"
+                required
+                autocomplete="email"
+              />
+              <span class="form-error" id="login-email-error"></span>
+            </div>
+            <!--Password input -->
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input
+                type="password"
+                id="login-password"
+                name="password"
+                placeholder="Enter your password"
+                required
+                autocomplete="current-password"
+              />
+              <span
+                class="form-error"
+                id="login-password-error"
+                role="alert"
+              ></span>
+            </div>
+            <!-- form actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-block">
+                <span class="btn-text">Sign In</span>
+                <span class="btn-loader hidden"></span>
+              </button>
+            </div>
+            <!-- form footer -->
+            <div class="form-footer">
+              <p>
+                Don't have an account?
+                <a href="#/register" class="auth-link">Create one</a>
               </p>
             </div>
-            <form id="login-form" class="auth-form" novalidate>
-              <!--Email input-->
-              <div class="form-group">
-                <label for="login-email">Email Address</label>
-                <input
-                  type="email"
-                  id="login-email"
-                  name="email"
-                  placeholder="Enter your email"
-                  required
-                  autocomplete="email"
-                />
-                <span class="form-error" id="login-email-error"></span>
-              </div>
-              <!--Password input with visibility toggle-->
-              <div class="form-group">
-                <label for="login-password">Password</label>
-                <div class="password-input-wrapper">
-                  <span class="input-icon">&#128274;</span>
-                  <input
-                    type="password"
-                    id="login-password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required
-                    autocomplete="current-password"
-                  />
-                  <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="login-password"
-                    aria-label="Toggle password visibility"
-                  >
-                    👁️
-                  </button>
-                </div>
-                <span
-                  class="form-error"
-                  id="login-password-error"
-                  role="alert"
-                ></span>
-              </div>
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary btn-block">
-                  <span class="btn-text">Sign In</span>
-                  <span class="btn-loader hidden"></span>
-                </button>
-              </div>
-              <div z="form-footer">
-                <p>
-                  Don't have an account?
-                  <a href="#/register" class="auth-link">Create one</a>
-                </p>
-              </div>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
     </template>
@@ -244,172 +118,109 @@
           <div class="floating-shape shape-3"></div>
           <div class="floating-shape shape-4"></div>
         </div>
-        <div class="auth-split">
-          <div class="auth-showcase">
-            <div class="showcase-content">
-              <div class="showcase-badge">Get Started Free</div>
-              <h2 class="showcase-title">Start managing tasks like a pro.</h2>
-              <p class="showcase-desc">
-                Create your free account and discover a better way to manage
-                your workflow.
-              </p>
-              <div class="showcase-stats">
-                <div class="showcase-stat">
-                  <span class="stat-number">10k+</span>
-                  <span class="stat-label">Active Users</span>
+
+        <div class="auth-card">
+          <div class="auth-header">
+            <div class="auth-logo">
+              <span class="logo-icon">✓</span>
+              <h1>TaskMaster Pro</h1>
+            </div>
+            <p class="auth-subtitle">
+              Create your account and boost your productivity!
+            </p>
+          </div>
+          <form id="register-form" class="auth-form" novalidate>
+            <div class="form-group">
+              <label for="register-name">Full Name</label>
+
+              <input
+                type="text"
+                id="register-name"
+                name="name"
+                placeholder="Enter your full name"
+                required
+                autocomplete="name"
+              />
+
+              <span
+                class="form-error"
+                id="register-name-error"
+                role="alert"
+              ></span>
+            </div>
+            <div class="form-group">
+              <label for="register-email">Email Address</label>
+
+              <input
+                type="email"
+                id="register-email"
+                name="email"
+                placeholder="Enter your email"
+                required
+                autocomplete="email"
+              />
+
+              <span
+                class="form-error"
+                id="register-email-error"
+                role="alert"
+              ></span>
+            </div>
+            <div class="form-group">
+              <label for="register-password">Password</label>
+
+              <input
+                type="password"
+                id="register-password"
+                name="password"
+                placeholder="Create a strong password"
+                required
+                autocomplete="new-password"
+              />
+
+              <span
+                class="form-error"
+                id="register-password-error"
+                role="alert"
+              ></span>
+              <div class="password-strength">
+                <div class="strength-bar">
+                  <div class="strength-fill" id="password-strength-fill"></div>
                 </div>
-                <div class="showcase-stat">
-                  <span class="stat-number">500k+</span>
-                  <span class="stat-label">Tasks Completed</span>
-                </div>
-                <div class="showcase-stat">
-                  <span class="stat-number">99%</span>
-                  <span class="stat-label">Uptime</span>
-                </div>
-              </div>
-              <div class="showcase-testimonial">
-                <p>
-                  &ldquo;TaskMaster Pro transformed how our team collaborates.
-                  Highly recommended!&rdquo;
-                </p>
-                <div class="testimonial-author">
-                  <span class="testimonial-avatar">JD</span>
-                  <div>
-                    <strong>Jane Doe</strong>
-                    <span>Product Manager</span>
-                  </div>
-                </div>
+                <span class="strength-text" id="password-strength-text"
+                  >Password strength</span
+                >
               </div>
             </div>
-          </div>
-          <div class="auth-card">
-            <div class="auth-header">
-              <div class="auth-logo">
-                <span class="logo-icon">✓</span>
-                <h1>TaskMaster Pro</h1>
-              </div>
-              <p class="auth-subtitle">
-                Create your account and boost your productivity!
+            <div class="form-group">
+              <label for="register-confirm">Confirm Password</label>
+              <input
+                type="password"
+                id="register-confirm"
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                required
+                autocomplete="new-password"
+              />
+              <span
+                class="form-error"
+                id="register-confirm-error"
+                role="alert"
+              ></span>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary btn-block">
+                <span class="btn-text">Create Account</span>
+                <span class="btn-loader hidden"></span>
+              </button>
+            </div>
+            <div class="form-footer">
+              <p>
+                Already have an account?
+                <a href="#/login" class="auth-link">Sign in</a>
               </p>
             </div>
-            <form id="register-form" class="auth-form" novalidate>
-              <div class="form-group">
-                <label for="register-name">Full Name</label>
-                <div class="input-icon-wrapper">
-                  <span class="input-icon">&#128100;</span>
-                  <input
-                    type="text"
-                    id="register-name"
-                    name="name"
-                    placeholder="Enter your full name"
-                    required
-                    autocomplete="name"
-                  />
-                </div>
-                <span
-                  class="form-error"
-                  id="register-name-error"
-                  role="alert"
-                ></span>
-              </div>
-              <div class="form-group">
-                <label for="register-email">Email Address</label>
-                <div class="input-icon-wrapper">
-                  <span class="input-icon">&#9993;</span>
-                  <input
-                    type="email"
-                    id="register-email"
-                    name="email"
-                    placeholder="Enter your email"
-                    required
-                    autocomplete="email"
-                  />
-                </div>
-                <span
-                  class="form-error"
-                  id="register-email-error"
-                  role="alert"
-                ></span>
-              </div>
-              <div class="form-group">
-                <label for="register-password">Password</label>
-                <div class="password-input-wrapper">
-                  <span class="input-icon">&#128274;</span>
-                  <input
-                    type="password"
-                    id="register-password"
-                    name="password"
-                    placeholder="Create a strong password"
-                    required
-                    autocomplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="register-password"
-                    aria-label="Toggle password visibility"
-                  >
-                    👁️
-                  </button>
-                </div>
-                <span
-                  class="form-error"
-                  id="register-password-error"
-                  role="alert"
-                ></span>
-                <div class="password-strength">
-                  <div class="strength-bar">
-                    <div
-                      class="strength-fill"
-                      id="password-strength-fill"
-                    ></div>
-                  </div>
-                  <span class="strength-text" id="password-strength-text"
-                    >Password strength</span
-                  >
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="register-confirm">Confirm Password</label>
-                <div class="password-input-wrapper">
-                  <span class="input-icon">&#128274;</span>
-                  <input
-                    type="password"
-                    id="register-confirm"
-                    name="confirmPassword"
-                    placeholder="Confirm your password"
-                    required
-                    autocomplete="new-password"
-                  />
-                  <button
-                    type="button"
-                    class="password-toggle"
-                    data-target="register-confirm"
-                    aria-label="Toggle password visibility"
-                  >
-                    👁️
-                  </button>
-                </div>
-                <span
-                  class="form-error"
-                  id="register-confirm-error"
-                  role="alert"
-                ></span>
-              </div>
-              <div class="form-actions">
-                <button type="submit" class="btn btn-primary btn-block">
-                  <span class="btn-text">Create Account</span>
-                  <span class="btn-loader hidden"></span>
-                </button>
-              </div>
-              <div class="form-footer">
-                <p>
-                  Already have an account?
-                  <a href="#/login" class="auth-link">Sign in</a>
-                </p>
-              </div>
-            </form>
-          </div>
+          </form>
         </div>
       </div>
     </template>
@@ -614,53 +425,6 @@
             <p class="tasks-subtitle">Manage and organize your tasks</p>
           </div>
           <div class="header-actions">
-            <div class="tasks-search-wrapper">
-              <span class="search-icon">🔍</span>
-              <input
-                type="text"
-                class="search-input"
-                id="task-search"
-                placeholder="Search tasks…"
-                aria-label="Search tasks"
-              />
-            </div>
-            <div class="view-toggle">
-              <button
-                class="view-btn active"
-                data-view="board"
-                title="Board View"
-              >
-                <span>▦</span>
-              </button>
-              <button class="view-btn" data-view="list" title="List View">
-                <span>☰</span>
-              </button>
-            </div>
-            <div class="filter-dropdown">
-              <button class="btn btn-secondary filter-btn">
-                <span>🔽 Filter</span>
-              </button>
-              <div class="filter-menu hidden">
-                <div class="filter-group">
-                  <label>Priority</label>
-                  <select id="filter-priority">
-                    <option value="">All Priorities</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                  </select>
-                </div>
-                <div class="filter-group">
-                  <label>Sort By</label>
-                  <select id="sort-by">
-                    <option value="created">Date Created</option>
-                    <option value="dueDate">Due Date</option>
-                    <option value="priority">Priority</option>
-                    <option value="title">Title</option>
-                  </select>
-                </div>
-              </div>
-            </div>
             <button class="btn btn-primary" id="add-task-btn">
               <span>+ Add Task</span>
             </button>

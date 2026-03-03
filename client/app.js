@@ -50,10 +50,6 @@ class App {
     });
   }
 
-  /**
-   * Setup the API client with stored token
-   * @private
-   */
   _setupApiClient() {
     const token = state.getToken();
     if (token) {
@@ -62,11 +58,6 @@ class App {
     }
   }
 
-  /**
-   * Validate existing session with the server
-   * @param {Function} callback - Called when validation completes
-   * @private
-   */
   _validateSession(callback) {
     if (!state.isAuthenticated()) {
       callback();
@@ -98,10 +89,6 @@ class App {
     );
   }
 
-  /**
-   * Setup the router with all routes
-   * @private
-   */
   _setupRouter() {
     // Set auth guard
     router.setAuthGuard(() => state.isAuthenticated());
@@ -168,10 +155,6 @@ class App {
     });
   }
 
-  /**
-   * Setup the developer panel for network testing
-   * @private
-   */
   _setupDevPanel() {
     const devPanel = document.getElementById("dev-panel");
     const devFab = document.getElementById("dev-panel-fab");
@@ -238,11 +221,6 @@ class App {
     updateDropRate?.();
   }
 
-  /**
-   * Update developer panel statistics
-   * @param {Object} stats - Network stats
-   * @private
-   */
   _updateDevPanelStats(stats) {
     const elements = {
       requests: document.getElementById("stat-requests"),
@@ -258,10 +236,6 @@ class App {
     if (elements.retries) elements.retries.textContent = stats.totalRetries;
   }
 
-  /**
-   * Setup global event listeners
-   * @private
-   */
   _setupEventListeners() {
     // Listen for API retry events
     window.addEventListener("api:retry", (event) => {
@@ -291,11 +265,6 @@ class App {
     });
   }
 
-  /**
-   * Handle user logout
-   * @param {boolean} showMessage - Whether to show toast message
-   * @private
-   */
   _handleLogout(showMessage = true) {
     const afterLogout = () => {
       // Clear client state
@@ -328,11 +297,6 @@ class App {
     );
   }
 
-  /**
-   * Update active link in navbar
-   * @param {string} currentPath - Current route path
-   * @private
-   */
   _updateNavbarActiveLink(currentPath) {
     const navLinks = document.querySelectorAll(".nav-link");
     navLinks.forEach((link) => {

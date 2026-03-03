@@ -13,21 +13,9 @@
 // Uses globals: api, state, showToast, showSuccess, showError, createTaskCard, createTaskRow, getNextStatus, getPrevStatus, API_ROUTES, TOAST_TYPES, TASK_STATUS, TASK_PRIORITY, SUCCESS_MESSAGES, ERROR_MESSAGES
 
 (function () {
-  // Current view mode
-  let currentView = "board";
-
-  // Current filter/sort settings
-  let filterPriority = "";
-  let sortBy = "created";
-  let searchQuery = "";
-
   // Task being edited (null for create)
   let editingTaskId = null;
 
-  /**
-   * Render the tasks page
-   * @param {HTMLElement} container - Container element
-   */
   function renderTasksPage(container) {
     const template = document.getElementById("template-tasks");
 
@@ -41,26 +29,9 @@
     }
   }
 
-  /**
-   * Initialize tasks page functionality
-   */
   function initTasksPage() {
-    // Reset filter/search state for clean page load
-    filterPriority = "";
-    sortBy = "created";
-    searchQuery = "";
-
     // Load tasks
     loadTasks();
-
-    // Setup view toggle
-    setupViewToggle();
-
-    // Setup filter dropdown
-    setupFilters();
-
-    // Setup search
-    setupSearch();
 
     // Setup add task button
     setupAddTaskButton();
@@ -70,101 +41,8 @@
 
     // Setup modal
     setupTaskModal();
-
-    // Setup keyboard shortcuts
-    setupKeyboardShortcuts();
   }
 
-  /**
-   * Setup search input
-   */
-  function setupSearch() {
-    const searchInput = document.getElementById("task-search");
-    if (!searchInput) return;
-
-    let debounceTimer;
-    searchInput.addEventListener("input", (e) => {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
-        searchQuery = e.target.value.trim().toLowerCase();
-        renderTasks(state.getTasks());
-      }, 200);
-    });
-
-    // Clear search on Escape
-    searchInput.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        searchInput.value = "";
-        searchQuery = "";
-        renderTasks(state.getTasks());
-      }
-    });
-  }
-
-  /**
-   * Setup keyboard shortcuts for the tasks page
-   */
-  function setupKeyboardShortcuts() {
-    const handler = (e) => {
-      // Don't trigger if typing in an input
-      if (
-        e.target.tagName === "INPUT" ||
-        e.target.tagName === "TEXTAREA" ||
-        e.target.tagName === "SELECT"
-      ) {
-        return;
-      }
-
-      // N - New task
-      if (e.key === "n" || e.key === "N") {
-        e.preventDefault();
-        openTaskModal();
-      }
-
-      // / - Focus search
-      if (e.key === "/") {
-        e.preventDefault();
-        const searchInput = document.getElementById("task-search");
-        if (searchInput) {
-          searchInput.focus();
-          searchInput.select();
-        }
-      }
-
-      // Escape - Close any open modal
-      if (e.key === "Escape") {
-        closeTaskModal();
-        closeConfirmModal();
-        // Also close keyboard shortcuts hint
-        const hint = document.getElementById("shortcuts-hint");
-        if (hint) hint.classList.add("hidden");
-      }
-
-      // ? - Toggle keyboard shortcuts hint
-      if (e.key === "?") {
-        const hint = document.getElementById("shortcuts-hint");
-        if (hint) {
-          hint.classList.toggle("hidden");
-          const closeBtn = document.getElementById("shortcuts-close");
-          closeBtn?.addEventListener("click", () =>
-            hint.classList.add("hidden"),
-          );
-        }
-      }
-    };
-
-    document.addEventListener("keydown", handler);
-
-    // Store handler for cleanup (in case of SPA re-init, avoids stacking)
-    if (window.__tasksKeyboardHandler) {
-      document.removeEventListener("keydown", window.__tasksKeyboardHandler);
-    }
-    window.__tasksKeyboardHandler = handler;
-  }
-
-  /**
-   * Load tasks from API
-   */
   function loadTasks() {
     state.setTasksLoading(true);
 
@@ -186,41 +64,14 @@
     );
   }
 
-  /**
-   * Render tasks based on current view mode
-   * @param {Array} tasks - Tasks to render
-   */
   function renderTasks(tasks) {
-    // Apply filters
-    let filteredTasks = [...tasks];
-
-    if (filterPriority) {
-      filteredTasks = filteredTasks.filter(
-        (t) => t.priority === filterPriority,
-      );
-    }
-
-    if (searchQuery) {
-      filteredTasks = filteredTasks.filter(
-        (t) =>
-          t.title.toLowerCase().includes(searchQuery) ||
-          (t.description || "").toLowerCase().includes(searchQuery),
-      );
-    }
-
-    // Apply sorting
-    filteredTasks = sortTasks(filteredTasks, sortBy);
-
-    // Check for empty state
     const emptyState = document.getElementById("empty-tasks");
     const boardEl = document.getElementById("kanban-board");
-    const listEl = document.getElementById("tasks-list");
 
     // Truly empty (no tasks at all)
     if (tasks.length === 0) {
       emptyState?.classList.remove("hidden");
       boardEl?.classList.add("hidden");
-      listEl?.classList.add("hidden");
 
       // Setup empty state button
       const emptyAddBtn = document.getElementById("empty-add-task");
@@ -228,47 +79,13 @@
       return;
     }
 
+    // Tasks exist - show board
     emptyState?.classList.add("hidden");
+    boardEl?.classList.remove("hidden");
 
-    // Filter / search yielded no results
-    if (filteredTasks.length === 0) {
-      const noResultsId = "no-filter-results";
-      let noResults = document.getElementById(noResultsId);
-      if (!noResults) {
-        noResults = document.createElement("div");
-        noResults.id = noResultsId;
-        noResults.className = "empty-state-large";
-        noResults.innerHTML = `
-        <div class="empty-illustration"><div class="empty-icon-wrapper"><span>🔍</span></div></div>
-        <h2>No matching tasks</h2>
-        <p>Try adjusting your search or filter criteria.</p>
-      `;
-        boardEl?.parentNode?.insertBefore(noResults, boardEl);
-      }
-      noResults.classList.remove("hidden");
-      boardEl?.classList.add("hidden");
-      listEl?.classList.add("hidden");
-      return;
-    }
-
-    // Hide no-results if visible
-    document.getElementById("no-filter-results")?.classList.add("hidden");
-
-    if (currentView === "board") {
-      boardEl?.classList.remove("hidden");
-      listEl?.classList.add("hidden");
-      renderKanbanBoard(filteredTasks);
-    } else {
-      boardEl?.classList.add("hidden");
-      listEl?.classList.remove("hidden");
-      renderTasksList(filteredTasks);
-    }
+    renderKanbanBoard(tasks);
   }
 
-  /**
-   * Render Kanban board view
-   * @param {Array} tasks - Filtered tasks
-   */
   function renderKanbanBoard(tasks) {
     // Group tasks by status
     const tasksByStatus = {
@@ -330,127 +147,6 @@
     });
   }
 
-  /**
-   * Render list view
-   * @param {Array} tasks - Filtered tasks
-   */
-  function renderTasksList(tasks) {
-    const tbody = document.getElementById("tasks-table-body");
-    if (!tbody) return;
-
-    tbody.innerHTML = "";
-
-    if (tasks.length === 0) {
-      tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="empty-cell">No tasks found</td>
-            </tr>
-        `;
-      return;
-    }
-
-    tasks.forEach((task) => {
-      const row = createTaskRow(task, {
-        onEdit: handleEditTask,
-        onDelete: handleDeleteTask,
-      });
-      tbody.appendChild(row);
-    });
-  }
-
-  /**
-   * Sort tasks array
-   * @param {Array} tasks - Tasks to sort
-   * @param {string} sortBy - Sort field
-   * @returns {Array} Sorted tasks
-   */
-  function sortTasks(tasks, sortBy) {
-    const sorted = [...tasks];
-    const priorityOrder = { high: 3, medium: 2, low: 1 };
-
-    sorted.sort((a, b) => {
-      switch (sortBy) {
-        case "priority":
-          return (
-            (priorityOrder[b.priority] || 0) - (priorityOrder[a.priority] || 0)
-          );
-        case "dueDate":
-          const dateA = a.dueDate
-            ? new Date(a.dueDate)
-            : new Date("9999-12-31");
-          const dateB = b.dueDate
-            ? new Date(b.dueDate)
-            : new Date("9999-12-31");
-          return dateA - dateB;
-        case "title":
-          return a.title.localeCompare(b.title);
-        case "created":
-        default:
-          return new Date(b.createdAt) - new Date(a.createdAt);
-      }
-    });
-
-    return sorted;
-  }
-
-  /**
-   * Setup view toggle buttons
-   */
-  function setupViewToggle() {
-    const viewBtns = document.querySelectorAll(".view-btn");
-
-    viewBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const view = btn.getAttribute("data-view");
-
-        // Update active button
-        viewBtns.forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-
-        // Change view
-        currentView = view;
-        renderTasks(state.getTasks());
-      });
-    });
-  }
-
-  /**
-   * Setup filter dropdown
-   */
-  function setupFilters() {
-    const filterBtn = document.querySelector(".filter-btn");
-    const filterMenu = document.querySelector(".filter-menu");
-    const prioritySelect = document.getElementById("filter-priority");
-    const sortSelect = document.getElementById("sort-by");
-
-    // Toggle dropdown
-    filterBtn?.addEventListener("click", () => {
-      filterMenu?.classList.toggle("hidden");
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener("click", (e) => {
-      if (!e.target.closest(".filter-dropdown")) {
-        filterMenu?.classList.add("hidden");
-      }
-    });
-
-    // Priority filter
-    prioritySelect?.addEventListener("change", (e) => {
-      filterPriority = e.target.value;
-      renderTasks(state.getTasks());
-    });
-
-    // Sort selection
-    sortSelect?.addEventListener("change", (e) => {
-      sortBy = e.target.value;
-      renderTasks(state.getTasks());
-    });
-  }
-
-  /**
-   * Setup per-column add task buttons
-   */
   function setupColumnAddButtons() {
     const columnBtns = document.querySelectorAll(".column-add-btn");
     columnBtns.forEach((btn) => {
@@ -468,17 +164,11 @@
     });
   }
 
-  /**
-   * Setup add task button
-   */
   function setupAddTaskButton() {
     const addBtn = document.getElementById("add-task-btn");
     addBtn?.addEventListener("click", () => openTaskModal());
   }
 
-  /**
-   * Setup task modal functionality
-   */
   function setupTaskModal() {
     const form = document.getElementById("task-form");
     const descInput = document.getElementById("task-description");
@@ -513,9 +203,6 @@
     setupDeleteConfirmModal();
   }
 
-  /**
-   * Setup delete confirmation modal
-   */
   function setupDeleteConfirmModal() {
     document
       .getElementById("confirm-close")
@@ -531,10 +218,6 @@
     });
   }
 
-  /**
-   * Open task modal (for create or edit)
-   * @param {Object} task - Task to edit (null for create)
-   */
   function openTaskModal(task = null) {
     const modal = document.getElementById("task-modal");
     const modalContainer = document.querySelector("#view-container");
@@ -597,19 +280,12 @@
     document.getElementById("task-title")?.focus();
   }
 
-  /**
-   * Close task modal
-   */
   function closeTaskModal() {
     const modal = document.getElementById("task-modal");
     modal?.classList.remove("visible");
     editingTaskId = null;
   }
 
-  /**
-   * Handle task form submission
-   * @param {Event} event - Submit event
-   */
   function handleTaskFormSubmit(event) {
     event.preventDefault();
 
@@ -687,10 +363,6 @@
     }
   }
 
-  /**
-   * Handle edit task action
-   * @param {Object} task - Task to edit
-   */
   function handleEditTask(task) {
     openTaskModal(task);
   }
@@ -698,18 +370,11 @@
   // Store task to delete
   let taskToDelete = null;
 
-  /**
-   * Handle delete task action
-   * @param {Object} task - Task to delete
-   */
   function handleDeleteTask(task) {
     taskToDelete = task;
     openConfirmModal();
   }
 
-  /**
-   * Open delete confirmation modal
-   */
   function openConfirmModal() {
     const modal = document.getElementById("confirm-modal");
     const container = document.querySelector("#view-container");
@@ -737,18 +402,12 @@
     modalEl.classList.add("visible");
   }
 
-  /**
-   * Close delete confirmation modal
-   */
   function closeConfirmModal() {
     const modal = document.getElementById("confirm-modal");
     modal?.classList.remove("visible");
     taskToDelete = null;
   }
 
-  /**
-   * Execute task deletion
-   */
   function executeDelete() {
     if (!taskToDelete) return;
 
@@ -777,11 +436,6 @@
     );
   }
 
-  /**
-   * Handle status change (from task card buttons)
-   * @param {string} taskId - Task ID
-   * @param {string} newStatus - New status
-   */
   function handleStatusChange(taskId, newStatus) {
     api.put(
       API_ROUTES.TASKS.BY_ID(taskId),
@@ -804,11 +458,6 @@
     );
   }
 
-  /**
-   * Set button loading state
-   * @param {HTMLButtonElement} button - Button element
-   * @param {boolean} isLoading - Loading state
-   */
   function setButtonLoading(button, isLoading) {
     if (!button) return;
 

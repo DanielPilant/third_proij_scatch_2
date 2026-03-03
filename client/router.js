@@ -42,10 +42,6 @@ class Router {
     console.log("[Router] Initialized");
   }
 
-  /**
-   * Initialize the router
-   * @param {HTMLElement|string} container - View container element or selector
-   */
   init(container) {
     // Get container element
     if (typeof container === "string") {
@@ -68,12 +64,6 @@ class Router {
     console.log("[Router] Started listening for route changes");
   }
 
-  /**
-   * Register a route
-   * @param {string} path - Route path (e.g., '/dashboard')
-   * @param {Function} handler - Handler function that returns HTML or renders view
-   * @param {Object} options - Route options (title, requiresAuth, etc.)
-   */
   register(path, handler, options = {}) {
     this._routes.set(path, {
       handler,
@@ -87,11 +77,6 @@ class Router {
     console.log(`[Router] Registered route: ${path}`, options);
   }
 
-  /**
-   * Navigate to a route
-   * @param {string} path - Route path
-   * @param {Object} params - Optional URL parameters
-   */
   navigate(path, params = {}) {
     // Build query string if params provided
     let queryString = "";
@@ -112,24 +97,14 @@ class Router {
     window.location.hash = fullPath;
   }
 
-  /**
-   * Navigate back in history
-   */
   back() {
     window.history.back();
   }
 
-  /**
-   * Navigate forward in history
-   */
   forward() {
     window.history.forward();
   }
 
-  /**
-   * Replace current route without adding to history
-   * @param {string} path - Route path
-   */
   replace(path) {
     const fullPath =
       window.location.pathname + window.location.search + `#${path}`;
@@ -137,27 +112,14 @@ class Router {
     this._onHashChange();
   }
 
-  /**
-   * Set the authentication guard function
-   * @param {Function} guardFn - Function that returns true if navigation allowed
-   */
   setAuthGuard(guardFn) {
     this._authGuard = guardFn;
   }
 
-  /**
-   * Get current route information
-   * @returns {Object} Current route info
-   */
   getCurrentRoute() {
     return this._currentRoute;
   }
 
-  /**
-   * Add a route change listener
-   * @param {Function} callback - Function(newRoute, oldRoute)
-   * @returns {Function} Unsubscribe function
-   */
   onRouteChange(callback) {
     this._listeners.push(callback);
 
@@ -169,11 +131,6 @@ class Router {
     };
   }
 
-  /**
-   * Check if a route requires authentication
-   * @param {string} path - Route path
-   * @returns {boolean}
-   */
   isProtectedRoute(path) {
     const route = this._routes.get(path);
     if (route) {
@@ -183,9 +140,6 @@ class Router {
     return !PUBLIC_ROUTES.includes(path);
   }
 
-  /**
-   * Destroy the router (cleanup)
-   */
   destroy() {
     window.removeEventListener("hashchange", this._onHashChange);
     this._routes.clear();
@@ -196,15 +150,9 @@ class Router {
   // Private methods
   // =====================================================
 
-  /**
-   * Handle hash change event
-   * @private
-   */
   _onHashChange() {
     const { path, query } = this._parseHash(window.location.hash);
-
     console.log(`[Router] Hash changed: ${path}`, query);
-
     const oldRoute = this._currentRoute;
 
     // Find matching route
@@ -218,10 +166,6 @@ class Router {
         routePath = this._defaultRoute;
         route = this._routes.get(routePath);
       }
-    }
-
-    // Still no route found
-    if (!route) {
       console.log(
         `[Router] No route found for: ${path}, redirecting to default`,
       );
@@ -277,12 +221,6 @@ class Router {
     this._notifyListeners(this._currentRoute, oldRoute);
   }
 
-  /**
-   * Parse the hash string to get path and query params
-   * @param {string} hash - Hash string
-   * @returns {Object} { path, query }
-   * @private
-   */
   _parseHash(hash) {
     // Remove leading # and /
     let cleanHash = hash.replace(/^#\/?/, "/");
@@ -309,12 +247,6 @@ class Router {
     return { path, query };
   }
 
-  /**
-   * Notify route change listeners
-   * @param {Object} newRoute - New route info
-   * @param {Object} oldRoute - Previous route info
-   * @private
-   */
   _notifyListeners(newRoute, oldRoute) {
     this._listeners.forEach((callback) => {
       try {

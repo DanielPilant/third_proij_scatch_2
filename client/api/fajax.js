@@ -285,10 +285,6 @@ class FXMLHttpRequest {
   }
 }
 
-// =====================================================
-// API Client - Promise-based wrapper with retry logic
-// =====================================================
-
 /**
  * ApiClient - High-level API client with retry logic
  */

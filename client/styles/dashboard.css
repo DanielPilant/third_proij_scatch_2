@@ -13,18 +13,6 @@
   padding: var(--space-6);
   max-width: var(--max-width);
   margin: 0 auto;
-  animation: page-entrance 0.4s ease-out;
-}
-
-@keyframes page-entrance {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* =====================================================
@@ -72,7 +60,6 @@
   padding: var(--space-5);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--neutral-100);
-  transition: all var(--transition-base);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -207,7 +194,6 @@
   padding: var(--space-6);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--neutral-100);
-  transition: box-shadow var(--transition-base);
 }
 
 .dashboard-card:hover {
@@ -237,7 +223,6 @@
   font-weight: var(--font-medium);
   padding: var(--space-1) var(--space-3);
   border-radius: var(--radius-md);
-  transition: all var(--transition-fast);
 }
 
 .section-link:hover {
@@ -254,7 +239,6 @@
   padding: var(--space-6);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--neutral-100);
-  transition: box-shadow var(--transition-base);
 }
 
 .dashboard-section:hover {
@@ -301,7 +285,6 @@
   fill: none;
   stroke-width: 10;
   stroke-linecap: round;
-  transition: stroke-dasharray 0.8s ease-out;
 }
 
 .donut-todo {
@@ -423,7 +406,6 @@
 .priority-fill {
   height: 100%;
   border-radius: var(--radius-full);
-  transition: width 0.8s ease-out;
 }
 
 .priority-fill.high {
@@ -451,7 +433,6 @@
   padding: var(--space-3);
   border-bottom: 1px solid var(--neutral-100);
   border-radius: var(--radius-md);
-  transition: background var(--transition-fast);
 }
 
 .deadline-item:hover {
@@ -521,7 +502,6 @@
   padding: var(--space-3);
   border-bottom: 1px solid var(--neutral-100);
   border-radius: var(--radius-md);
-  transition: background var(--transition-fast);
 }
 
 .activity-item:hover {
@@ -609,7 +589,6 @@
   font-weight: var(--font-medium);
   color: var(--neutral-600);
   border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
 }
 
 .view-toggle button.active {
@@ -673,7 +652,6 @@
   border-radius: var(--radius-xl);
   padding: var(--space-4);
   min-height: 400px;
-  transition: background var(--transition-fast);
 }
 
 .kanban-column[data-status="todo"] {
@@ -749,7 +727,6 @@
   color: var(--neutral-400);
   border-radius: var(--radius-md);
   line-height: 1;
-  transition: all var(--transition-fast);
   flex-shrink: 0;
 }
 
@@ -775,20 +752,7 @@
   padding: var(--space-4);
   box-shadow: var(--shadow-card);
   cursor: pointer;
-  transition: all var(--transition-base);
   border: 1px solid var(--neutral-100);
-  animation: cardEntrance 0.3s ease-out;
-}
-
-@keyframes cardEntrance {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .task-card:hover {
@@ -860,7 +824,6 @@
   gap: var(--space-1);
   opacity: 0;
   transform: translateX(4px);
-  transition: all var(--transition-fast);
 }
 
 .task-card:hover .task-card-actions {
@@ -955,7 +918,6 @@
   color: var(--neutral-400);
   border-radius: var(--radius-sm);
   border: 1px solid var(--neutral-200);
-  transition: all var(--transition-fast);
 }
 
 .nav-btn:hover:not(:disabled) {
@@ -1030,7 +992,6 @@
 }
 
 .tasks-table tbody tr {
-  transition: background var(--transition-fast);
 }
 
 .tasks-table tbody tr:hover {
@@ -1137,7 +1098,6 @@
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
   color: var(--neutral-800);
-  transition: all var(--transition-fast);
 }
 
 .tasks-search-wrapper .search-input:focus {
@@ -1200,18 +1160,6 @@
   border: 1px solid var(--neutral-200);
   padding: var(--space-4);
   z-index: var(--z-dropdown);
-  animation: fadeInDown 0.15s ease-out;
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .filter-menu .filter-group {
@@ -1296,7 +1244,6 @@
   border: 3px solid var(--neutral-200);
   border-top-color: var(--primary-500);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
 }
 
 .loading-text {
@@ -1313,17 +1260,7 @@
     var(--neutral-200) 75%
   );
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
   border-radius: var(--radius-md);
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
 }
 
 .skeleton-card {
@@ -1353,22 +1290,10 @@
   font-size: var(--text-sm);
   font-weight: var(--font-medium);
   z-index: var(--z-toast);
-  animation: slide-in 0.3s ease-out;
 }
 
 .retry-indicator.hidden {
   display: none;
-}
-
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateX(100%);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
 }
 
 .retry-spinner {
@@ -1377,7 +1302,6 @@
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
 }
 
 /* =====================================================

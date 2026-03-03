@@ -10,10 +10,6 @@
 // Uses globals: api, state, router, showToast, API_ROUTES, CLIENT_ROUTES, TOAST_TYPES, VALIDATION, isValidEmail, ERROR_MESSAGES, SUCCESS_MESSAGES
 // IIFE to encapsulate login page logic and avoid global scope pollution
 (function () {
-  /**
-   * Render the login page
-   * @param {HTMLElement} container - Container element
-   */
   function renderLoginPage(container) {
     const template = document.getElementById("template-login");
 
