@@ -119,14 +119,24 @@
     </template>
 
     <!-- Scripts in dependency order -->
+
+    <!-- Server-side scripts -->
     <script src="db.js"></script>
     <script src="authServer.js"></script>
     <script src="appServer.js"></script>
     <script src="dispatcher.js"></script>
+
+    <!-- Client-side scripts -->
     <script src="network/network.js"></script>
     <script src="client/api/fajax.js"></script>
-    <script src="client/app.js"></script>
+
     <script src="client/core/state.js"></script>
+
+    <script src="client/pages/auth.js"></script>
+    <script src="client/pages/tasks.js"></script>
+
     <script src="client/core/router.js"></script>
+
+    <script src="client/app.js"></script>
   </body>
 </html>

@@ -2,10 +2,12 @@
  * Helpers & Router
  */
 (function () {
+  // Simple helper to get element by id
   function $(id) {
     return document.getElementById(id);
   }
 
+  // Simple helper to escape HTML special chars
   function esc(s) {
     var d = document.createElement("div");
     d.textContent = s || "";
@@ -25,6 +27,7 @@
   function route() {
     var hash = location.hash.replace("#", "") || "login";
 
+    // security: if user tries to access tasks page without token, redirect to login
     if (hash === "tasks" && !state.token) {
       hash = "login";
     }
@@ -32,8 +35,10 @@
       hash = "tasks";
     }
 
+    // Show the page
     showPage(hash);
 
+    // Call page-specific init if needed
     if (hash === "login") {
       window.initLogin();
     }
