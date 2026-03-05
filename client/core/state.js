@@ -1,5 +1,5 @@
 /**
- * Global State & Session Persistence
+ * Global State & Session Persistence - IIFE
  */
 (function () {
   var state = { user: null, token: null };
@@ -14,6 +14,7 @@
     }
   } catch (e) {}
 
+  // Save current state to sessionStorage
   function saveState() {
     sessionStorage.setItem(
       "tm_state",
