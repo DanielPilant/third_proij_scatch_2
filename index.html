@@ -3,790 +3,128 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#2563eb" />
-    <meta
-      name="description"
-      content="TaskMaster Pro - A modern task management application to boost your productivity"
-    />
-    <title>TaskMaster Pro - Your Productivity Hub</title>
-
-    <!-- Preconnect for performance -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="client/styles/main.css" />
-    <link rel="stylesheet" href="client/styles/auth.css" />
-    <link rel="stylesheet" href="client/styles/dashboard.css" />
+    <title>TaskMaster</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- =====================================================================
-         MAIN APPLICATION CONTAINER - Build as a Single Page Application (SPA)
-         ===================================================================== -->
-    <div id="app">
-      <!-- Navigation will be injected here -->
-      <nav id="navbar-container"></nav>
-
-      <!-- Main content area where views are rendered -->
-      <main id="view-container"></main>
+    <!-- ========== NAVBAR (hidden on auth pages) ========== -->
+    <div id="navbar" class="navbar" style="display: none">
+      <span class="brand">TaskMaster</span>
+      <div class="nav-right">
+        <span id="nav-user"></span>
+        <button id="logout-btn" class="btn btn-sm btn-danger">Logout</button>
+      </div>
     </div>
 
-    <!-- =====================================================
-         HTML TEMPLATES (Using <template> tags as required)
-         ===================================================== -->
+    <!-- ========== VIEW CONTAINER ========== -->
+    <div id="view-container"></div>
 
-    <!-- ==== Login Page Template ==== -->
+    <!-- ========== LOGIN PAGE ========== -->
     <template id="template-login">
-      <div class="auth-page">
-        <div class="floating-shapes">
-          <div class="floating-shape shape-1"></div>
-          <div class="floating-shape shape-2"></div>
-          <div class="floating-shape shape-3"></div>
-          <div class="floating-shape shape-4"></div>
-        </div>
-        <div class="auth-card">
-          <!-- Auth header -->
-          <div class="auth-header">
-            <div class="auth-logo">
-              <span class="logo-icon">✓</span>
-              <h1>TaskMaster Pro</h1>
-            </div>
-            <p class="auth-subtitle">
-              Welcome back! Please sign in to continue.
-            </p>
-          </div>
-          <form id="login-form" class="auth-form" novalidate>
-            <!--Email input-->
-            <div class="form-group">
-              <label for="login-email">Email Address</label>
-              <input
-                type="email"
-                id="login-email"
-                name="email"
-                placeholder="Enter your email"
-                required
-                autocomplete="email"
-              />
-              <span class="form-error" id="login-email-error"></span>
-            </div>
-            <!--Password input -->
-            <div class="form-group">
-              <label for="login-password">Password</label>
-              <input
-                type="password"
-                id="login-password"
-                name="password"
-                placeholder="Enter your password"
-                required
-                autocomplete="current-password"
-              />
-              <span
-                class="form-error"
-                id="login-password-error"
-                role="alert"
-              ></span>
-            </div>
-            <!-- form actions -->
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary btn-block">
-                <span class="btn-text">Sign In</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-            <!-- form footer -->
-            <div class="form-footer">
-              <p>
-                Don't have an account?
-                <a href="#register" class="auth-link">Create one</a>
-              </p>
-            </div>
-          </form>
-        </div>
+      <div class="auth-card">
+        <h2>Sign In</h2>
+        <form id="login-form">
+          <label for="login-email">Email</label>
+          <input
+            type="email"
+            id="login-email"
+            placeholder="you@example.com"
+            required
+          />
+          <label for="login-password">Password</label>
+          <input
+            type="password"
+            id="login-password"
+            placeholder="Your password"
+            required
+          />
+          <button type="submit" id="login-btn" class="btn btn-primary">
+            Login
+          </button>
+        </form>
+        <p class="msg" id="login-msg"></p>
+        <p class="form-footer">
+          Don't have an account? <a href="#register">Register</a>
+        </p>
       </div>
     </template>
 
-    <!-- Register Page Template -->
+    <!-- ========== REGISTER PAGE ========== -->
     <template id="template-register">
-      <div class="auth-page">
-        <div class="floating-shapes">
-          <div class="floating-shape shape-1"></div>
-          <div class="floating-shape shape-2"></div>
-          <div class="floating-shape shape-3"></div>
-          <div class="floating-shape shape-4"></div>
-        </div>
-
-        <div class="auth-card">
-          <div class="auth-header">
-            <div class="auth-logo">
-              <span class="logo-icon">✓</span>
-              <h1>TaskMaster Pro</h1>
-            </div>
-            <p class="auth-subtitle">
-              Create your account and boost your productivity!
-            </p>
-          </div>
-          <form id="register-form" class="auth-form" novalidate>
-            <div class="form-group">
-              <label for="register-name">Full Name</label>
-
-              <input
-                type="text"
-                id="register-name"
-                name="name"
-                placeholder="Enter your full name"
-                required
-                autocomplete="name"
-              />
-
-              <span
-                class="form-error"
-                id="register-name-error"
-                role="alert"
-              ></span>
-            </div>
-            <div class="form-group">
-              <label for="register-email">Email Address</label>
-
-              <input
-                type="email"
-                id="register-email"
-                name="email"
-                placeholder="Enter your email"
-                required
-                autocomplete="email"
-              />
-
-              <span
-                class="form-error"
-                id="register-email-error"
-                role="alert"
-              ></span>
-            </div>
-            <div class="form-group">
-              <label for="register-password">Password</label>
-
-              <input
-                type="password"
-                id="register-password"
-                name="password"
-                placeholder="Create a strong password"
-                required
-                autocomplete="new-password"
-              />
-
-              <span
-                class="form-error"
-                id="register-password-error"
-                role="alert"
-              ></span>
-              <div class="password-strength">
-                <div class="strength-bar">
-                  <div class="strength-fill" id="password-strength-fill"></div>
-                </div>
-                <span class="strength-text" id="password-strength-text"
-                  >Password strength</span
-                >
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="register-confirm">Confirm Password</label>
-              <input
-                type="password"
-                id="register-confirm"
-                name="confirmPassword"
-                placeholder="Confirm your password"
-                required
-                autocomplete="new-password"
-              />
-              <span
-                class="form-error"
-                id="register-confirm-error"
-                role="alert"
-              ></span>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary btn-block">
-                <span class="btn-text">Create Account</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-            <div class="form-footer">
-              <p>
-                Already have an account?
-                <a href="#login" class="auth-link">Sign in</a>
-              </p>
-            </div>
-          </form>
-        </div>
+      <div class="auth-card">
+        <h2>Create Account</h2>
+        <form id="register-form">
+          <label for="register-name">Name</label>
+          <input
+            type="text"
+            id="register-name"
+            placeholder="Your name"
+            required
+          />
+          <label for="register-email">Email</label>
+          <input
+            type="email"
+            id="register-email"
+            placeholder="you@example.com"
+            required
+          />
+          <label for="register-password">Password</label>
+          <input
+            type="password"
+            id="register-password"
+            placeholder="Min 6 characters"
+            required
+          />
+          <button type="submit" id="register-btn" class="btn btn-primary">
+            Register
+          </button>
+        </form>
+        <p class="msg" id="register-msg"></p>
+        <p class="form-footer">
+          Already have an account? <a href="#login">Sign in</a>
+        </p>
       </div>
     </template>
 
-    <!-- Dashboard Page Template -->
-    <template id="template-dashboard">
-      <div class="dashboard-container">
-        <header class="dashboard-header">
-          <div class="header-content">
-            <h1 class="dashboard-title">Dashboard</h1>
-            <p class="dashboard-greeting" id="dashboard-greeting">
-              Welcome back!
-            </p>
-          </div>
-          <div class="header-actions">
-            <button class="btn btn-primary" id="quick-add-task">
-              <span>+ New Task</span>
-            </button>
-          </div>
-        </header>
-
-        <!-- Statistics Cards -->
-        <section class="stats-grid">
-          <div class="stat-card stat-total">
-            <div class="stat-icon total">📋</div>
-            <div class="stat-content">
-              <h3 class="stat-value" id="stat-total-tasks">0</h3>
-              <p class="stat-label">Total Tasks</p>
-            </div>
-          </div>
-          <div class="stat-card stat-completed">
-            <div class="stat-icon done">✅</div>
-            <div class="stat-content">
-              <h3 class="stat-value" id="stat-completed-tasks">0</h3>
-              <p class="stat-label">Completed</p>
-            </div>
-          </div>
-          <div class="stat-card stat-progress">
-            <div class="stat-icon progress">🔄</div>
-            <div class="stat-content">
-              <h3 class="stat-value" id="stat-in-progress-tasks">0</h3>
-              <p class="stat-label">In Progress</p>
-            </div>
-          </div>
-          <div class="stat-card stat-productivity">
-            <div
-              class="stat-icon todo"
-              style="background: var(--warning-50); color: var(--warning-600)"
-            >
-              📈
-            </div>
-            <div class="stat-content">
-              <h3 class="stat-value" id="stat-productivity">0%</h3>
-              <p class="stat-label">Productivity</p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Main Dashboard Content -->
-        <div class="dashboard-grid">
-          <!-- Productivity Chart Section -->
-          <section class="dashboard-section chart-section">
-            <div class="section-header">
-              <h2>Productivity Overview</h2>
-            </div>
-            <div class="chart-container">
-              <div class="donut-chart" id="productivity-chart">
-                <svg viewBox="0 0 100 100" class="donut-svg">
-                  <circle class="donut-ring" cx="50" cy="50" r="40"></circle>
-                  <circle
-                    class="donut-segment donut-todo"
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke-dasharray="0 251.2"
-                    stroke-dashoffset="0"
-                  ></circle>
-                  <circle
-                    class="donut-segment donut-progress"
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke-dasharray="0 251.2"
-                    stroke-dashoffset="0"
-                  ></circle>
-                  <circle
-                    class="donut-segment donut-done"
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke-dasharray="0 251.2"
-                    stroke-dashoffset="0"
-                  ></circle>
-                </svg>
-                <div class="donut-center">
-                  <span class="donut-total" id="donut-total">0</span>
-                  <span class="donut-label">Tasks</span>
-                </div>
-              </div>
-              <div class="chart-legend">
-                <div class="legend-item">
-                  <span class="legend-color todo"></span>
-                  <span>To Do</span>
-                  <span class="legend-value" id="legend-todo">0</span>
-                </div>
-                <div class="legend-item">
-                  <span class="legend-color progress"></span>
-                  <span>In Progress</span>
-                  <span class="legend-value" id="legend-progress">0</span>
-                </div>
-                <div class="legend-item">
-                  <span class="legend-color done"></span>
-                  <span>Done</span>
-                  <span class="legend-value" id="legend-done">0</span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- Upcoming Deadlines Section -->
-          <section class="dashboard-section deadlines-section">
-            <div class="section-header">
-              <h2>Upcoming Deadlines</h2>
-              <a href="#/tasks" class="section-link">View All</a>
-            </div>
-            <div class="deadlines-list" id="deadlines-list">
-              <div class="empty-state">
-                <p>No upcoming deadlines</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- Recent Activity Section -->
-          <section class="dashboard-section activity-section">
-            <div class="section-header">
-              <h2>Recent Activity</h2>
-            </div>
-            <div class="activity-list" id="activity-list">
-              <div class="empty-state">
-                <p>No recent activity</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- Priority Distribution -->
-          <section class="dashboard-section priority-section">
-            <div class="section-header">
-              <h2>Tasks by Priority</h2>
-            </div>
-            <div class="priority-bars">
-              <div class="priority-bar-item">
-                <div class="priority-label">
-                  <span class="priority-badge high">High</span>
-                  <span class="priority-count" id="priority-high">0</span>
-                </div>
-                <div class="priority-bar">
-                  <div
-                    class="priority-fill high"
-                    id="priority-high-bar"
-                    style="width: 0%"
-                  ></div>
-                </div>
-              </div>
-              <div class="priority-bar-item">
-                <div class="priority-label">
-                  <span class="priority-badge medium">Medium</span>
-                  <span class="priority-count" id="priority-medium">0</span>
-                </div>
-                <div class="priority-bar">
-                  <div
-                    class="priority-fill medium"
-                    id="priority-medium-bar"
-                    style="width: 0%"
-                  ></div>
-                </div>
-              </div>
-              <div class="priority-bar-item">
-                <div class="priority-label">
-                  <span class="priority-badge low">Low</span>
-                  <span class="priority-count" id="priority-low">0</span>
-                </div>
-                <div class="priority-bar">
-                  <div
-                    class="priority-fill low"
-                    id="priority-low-bar"
-                    style="width: 0%"
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-    </template>
-
-    <!-- Tasks/Kanban Page Template -->
+    <!-- ========== TASKS PAGE ========== -->
     <template id="template-tasks">
-      <div class="tasks-container">
-        <header class="tasks-header">
-          <div class="header-content">
-            <h1 class="tasks-title">Task Board</h1>
-            <p class="tasks-subtitle">Manage and organize your tasks</p>
-          </div>
-          <div class="header-actions">
-            <button class="btn btn-primary" id="add-task-btn">
-              <span>+ Add Task</span>
+      <div class="container">
+        <div class="task-form">
+          <h3 id="form-heading">Add Task</h3>
+          <form id="task-form">
+            <input
+              type="text"
+              id="task-title"
+              placeholder="Task title"
+              required
+            />
+            <input
+              type="text"
+              id="task-desc"
+              placeholder="Description (optional)"
+            />
+            <button
+              type="submit"
+              id="task-submit"
+              class="btn btn-primary"
+              style="width: auto"
+            >
+              Add Task
             </button>
-          </div>
-        </header>
-
-        <!-- Kanban Board View -->
-        <div class="kanban-board" id="kanban-board">
-          <div class="kanban-column" data-status="todo">
-            <div class="column-header">
-              <div class="column-title">
-                <span class="column-icon">📋</span>
-                <h3>To Do</h3>
-                <span class="task-count" id="count-todo">0</span>
-              </div>
-              <button
-                class="column-add-btn"
-                data-status="todo"
-                title="Add task"
-                aria-label="Add task to To Do"
-              >
-                +
-              </button>
-            </div>
-            <div class="column-body" id="column-todo">
-              <!-- Task cards will be rendered here -->
-            </div>
-          </div>
-          <div class="kanban-column" data-status="in-progress">
-            <div class="column-header">
-              <div class="column-title">
-                <span class="column-icon">🔄</span>
-                <h3>In Progress</h3>
-                <span class="task-count" id="count-in-progress">0</span>
-              </div>
-              <button
-                class="column-add-btn"
-                data-status="in-progress"
-                title="Add task"
-                aria-label="Add task to In Progress"
-              >
-                +
-              </button>
-            </div>
-            <div class="column-body" id="column-in-progress">
-              <!-- Task cards will be rendered here -->
-            </div>
-          </div>
-          <div class="kanban-column" data-status="done">
-            <div class="column-header">
-              <div class="column-title">
-                <span class="column-icon">✅</span>
-                <h3>Done</h3>
-                <span class="task-count" id="count-done">0</span>
-              </div>
-              <button
-                class="column-add-btn"
-                data-status="done"
-                title="Add task"
-                aria-label="Add task to Done"
-              >
-                +
-              </button>
-            </div>
-            <div class="column-body" id="column-done">
-              <!-- Task cards will be rendered here -->
-            </div>
-          </div>
-        </div>
-
-        <!-- List View (hidden by default) -->
-        <div class="tasks-list hidden" id="tasks-list">
-          <table class="tasks-table">
-            <thead>
-              <tr>
-                <th>Status</th>
-                <th>Title</th>
-                <th>Priority</th>
-                <th>Due Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tasks-table-body">
-              <!-- Task rows will be rendered here -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Empty State -->
-        <div class="empty-state-large hidden" id="empty-tasks">
-          <div class="empty-illustration">
-            <div class="empty-icon-wrapper">
-              <span>📝</span>
-            </div>
-          </div>
-          <h2>No tasks yet</h2>
-          <p>
-            Your task board is empty. Create your first task to get started on
-            your productivity journey!
-          </p>
-          <button class="btn btn-primary btn-lg" id="empty-add-task">
-            <span>+</span> Create Your First Task
-          </button>
-          <div class="empty-hint">
-            <span class="kbd">N</span> to quickly create a new task
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- Task Modal Template -->
-    <template id="template-task-modal">
-      <div class="modal-overlay" id="task-modal">
-        <div class="modal-container">
-          <div class="modal-header">
-            <h2 id="modal-title">Create New Task</h2>
-            <button class="modal-close" id="modal-close">×</button>
-          </div>
-          <form id="task-form" class="modal-body">
-            <div class="form-group">
-              <label for="task-title">Task Title *</label>
-              <input
-                type="text"
-                id="task-title"
-                name="title"
-                placeholder="Enter task title"
-                required
-                maxlength="100"
-              />
-              <span class="form-error" id="task-title-error"></span>
-            </div>
-            <div class="form-group">
-              <label for="task-description">Description</label>
-              <textarea
-                id="task-description"
-                name="description"
-                placeholder="Enter task description (optional)"
-                rows="3"
-                maxlength="500"
-              ></textarea>
-              <span class="char-count"><span id="desc-count">0</span>/500</span>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="task-priority">Priority</label>
-                <select id="task-priority" name="priority">
-                  <option value="low">Low</option>
-                  <option value="medium" selected>Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="task-status">Status</label>
-                <select id="task-status" name="status">
-                  <option value="todo">To Do</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="done">Done</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="task-due-date">Due Date</label>
-              <input type="date" id="task-due-date" name="dueDate" />
-            </div>
-            <div class="form-actions">
-              <button type="button" class="btn btn-secondary" id="modal-cancel">
-                Cancel
-              </button>
-              <button type="submit" class="btn btn-primary" id="modal-submit">
-                <span class="btn-text">Create Task</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
           </form>
+          <p class="msg" id="task-msg"></p>
         </div>
+        <div id="task-list"></div>
       </div>
     </template>
 
-    <!-- Delete Confirmation Modal Template -->
-    <template id="template-confirm-modal">
-      <div class="modal-overlay" id="confirm-modal">
-        <div class="modal-container modal-sm">
-          <div class="modal-header">
-            <h2>Delete Task</h2>
-            <button class="modal-close" id="confirm-close">×</button>
-          </div>
-          <div class="modal-body">
-            <div class="delete-warning">
-              <div class="warning-icon">🗑️</div>
-              <div>
-                <p class="delete-warning-title">This action cannot be undone</p>
-                <p class="delete-warning-desc">
-                  Are you sure you want to permanently delete this task?
-                </p>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                id="confirm-cancel"
-              >
-                Cancel
-              </button>
-              <button type="button" class="btn btn-danger" id="confirm-delete">
-                <span class="btn-text">Delete Task</span>
-                <span class="btn-loader hidden"></span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- Navbar Template -->
-    <template id="template-navbar">
-      <div class="navbar">
-        <div class="navbar-brand">
-          <a href="#dashboard" class="brand-link">
-            <span class="brand-icon">✓</span>
-            <span class="brand-text">TaskMaster</span>
-          </a>
-        </div>
-        <button
-          class="mobile-menu-toggle"
-          id="mobile-menu-toggle"
-          aria-label="Toggle navigation menu"
-        >
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
-        <nav class="navbar-menu" id="navbar-menu">
-          <a href="#dashboard" class="nav-link" data-route="dashboard">
-            <span class="nav-icon">📊</span>
-            <span>Dashboard</span>
-          </a>
-          <a href="#tasks" class="nav-link" data-route="tasks">
-            <span class="nav-icon">📋</span>
-            <span>Tasks</span>
-          </a>
-        </nav>
-        <div class="navbar-user">
-          <div class="user-info">
-            <span class="user-avatar" id="user-avatar">U</span>
-            <span class="user-name" id="user-name">User</span>
-          </div>
-          <button
-            class="btn btn-ghost logout-btn"
-            id="logout-btn"
-            aria-label="Log out"
-          >
-            <span class="logout-icon">&#x2190;</span>
-            <span class="logout-text">Logout</span>
-          </button>
-        </div>
-      </div>
-    </template>
-
-    <!-- Task Card Template -->
-    <template id="template-task-card">
-      <div class="task-card" data-task-id="" tabindex="0">
-        <div class="task-card-header">
-          <div class="task-card-header-left">
-            <span class="priority-indicator"></span>
-            <span class="task-priority-label"></span>
-          </div>
-          <div class="task-card-actions">
-            <button
-              class="task-action-btn edit-btn"
-              title="Edit task"
-              aria-label="Edit task"
-            >
-              ✏️
-            </button>
-            <button
-              class="task-action-btn delete-btn delete"
-              title="Delete task"
-              aria-label="Delete task"
-            >
-              🗑️
-            </button>
-          </div>
-        </div>
-        <div class="task-card-body">
-          <h4 class="task-card-title"></h4>
-          <p class="task-card-description"></p>
-        </div>
-        <div class="task-card-footer">
-          <div class="task-card-meta">
-            <span class="task-due-date"></span>
-          </div>
-          <div class="task-navigation">
-            <button
-              class="nav-btn prev"
-              title="Move to previous status"
-              aria-label="Move to previous status"
-            >
-              ←
-            </button>
-            <button
-              class="nav-btn next"
-              title="Move to next status"
-              aria-label="Move to next status"
-            >
-              →
-            </button>
-          </div>
-        </div>
-      </div>
-    </template>
-
-    <!-- Toast Template -->
-    <template id="template-toast">
-      <div class="toast" data-toast-id="">
-        <div class="toast-icon"></div>
-        <div class="toast-content">
-          <p class="toast-message"></p>
-        </div>
-        <button class="toast-close">×</button>
-        <div class="toast-progress"></div>
-      </div>
-    </template>
-
-    <!-- =====================================================
-         APPLICATION SCRIPTS (loaded sequentially)
-         ===================================================== -->
-    <!-- Shared constants (no dependencies) -->
-    <script src="shared/constants.js"></script>
-
-    <!-- Database layer -->
-    <script src="db/database.js"></script>
-    <script src="db/dbApi.js"></script>
-
-    <!-- Server layer -->
-    <script src="server/middleware/authMiddleware.js"></script>
-    <script src="server/auth/authServer.js"></script>
-    <script src="server/app/appServer.js"></script>
-    <script src="server/dispatcher.js"></script>
-
-    <!-- Network simulation -->
-    <script src="network/network.js"></script>
-
-    <!-- Client: FAJAX API layer -->
-    <script src="client/api/fajax.js"></script>
-
-    <!-- Client: State and Router -->
-    <script src="client/state.js"></script>
-    <script src="client/router.js"></script>
-
-    <!-- Client: UI Components -->
-    <script src="client/components/toast.js"></script>
-    <script src="client/components/navbar.js"></script>
-    <script src="client/components/taskCard.js"></script>
-
-    <!-- Client: Pages -->
-    <script src="client/pages/login.js"></script>
-    <script src="client/pages/register.js"></script>
-    <script src="client/pages/dashboard.js"></script>
-    <script src="client/pages/tasks.js"></script>
-
-    <!-- Client: Application entry point -->
-    <script src="client/app.js"></script>
+    <!-- Scripts in dependency order -->
+    <script src="db.js"></script>
+    <script src="authServer.js"></script>
+    <script src="appServer.js"></script>
+    <script src="dispatcher.js"></script>
+    <script src="network.js"></script>
+    <script src="fajax.js"></script>
+    <script src="app.js"></script>
   </body>
 </html>
