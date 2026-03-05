@@ -30,6 +30,25 @@
       for (var i = 0; i < taskCache.length; i++) {
         var t = taskCache[i];
         var doneClass = t.status === "done" ? " done" : "";
+
+        var btnTodo =
+          t.status !== "todo"
+            ? '<button class="btn btn-sm btn-success" onclick="app.setStatus(\'' +
+              t.id +
+              "', 'todo')\">To Do</button> "
+            : "";
+        var btnProg =
+          t.status !== "in-progress"
+            ? '<button class="btn btn-sm btn-success" onclick="app.setStatus(\'' +
+              t.id +
+              "', 'in-progress')\">In progress</button> "
+            : "";
+        var btnDone =
+          t.status !== "done"
+            ? '<button class="btn btn-sm btn-success" onclick="app.setStatus(\'' +
+              t.id +
+              "', 'done')\">Done</button> "
+            : "";
         html +=
           '<div class="task-item' +
           doneClass +
@@ -47,9 +66,9 @@
           '<button class="btn btn-sm" onclick="app.viewTask(\'' +
           t.id +
           "')\">View</button> " +
-          '<button class="btn btn-sm btn-success" onclick="app.toggleStatus(\'' +
-          t.id +
-          "')\">Toggle</button> " +
+          btnTodo +
+          btnProg +
+          btnDone +
           '<button class="btn btn-sm btn-warning" onclick="app.editTask(\'' +
           t.id +
           "')\">Edit</button> " +
@@ -169,29 +188,18 @@
     );
   }
 
-  function toggleStatus(id) {
-    for (var i = 0; i < taskCache.length; i++) {
-      if (taskCache[i].id === id) {
-        var next =
-          taskCache[i].status === "done"
-            ? "todo"
-            : taskCache[i].status === "todo"
-              ? "in-progress"
-              : "done";
-        fajax.put(
-          "/api/tasks/" + id,
-          { status: next },
-          function () {
-            loadTasks();
-          },
-          function (err) {
-            $("task-msg").textContent = err.message;
-            $("task-msg").className = "msg msg-error";
-          },
-        );
-        break;
-      }
-    }
+  function setStatus(id, newStatus) {
+    fajax.put(
+      "/api/tasks/" + id,
+      { status: newStatus },
+      function () {
+        loadTasks();
+      },
+      function (err) {
+        $("task-msg").textContent = err.message;
+        $("task-msg").className = "msg msg-error";
+      },
+    );
   }
 
   window.initTaskForm = initTaskForm;
@@ -201,6 +209,6 @@
     viewTask: viewTask,
     editTask: editTask,
     deleteTask: deleteTask,
-    toggleStatus: toggleStatus,
+    setStatus: setStatus,
   };
 })();
