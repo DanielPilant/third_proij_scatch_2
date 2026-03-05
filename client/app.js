@@ -1,78 +1,7 @@
 /**
- * Client Application
- * SPA with hash-based routing, simple global state,
- * and event handlers for Login, Register, and Tasks pages.
+ * Page Logic: Login, Register, Logout, Tasks + Boot
  */
 (function () {
-  /* ======== Global State ======== */
-  var state = { user: null, token: null };
-
-  // Restore session from sessionStorage
-  try {
-    var saved = JSON.parse(sessionStorage.getItem("tm_state"));
-    if (saved && saved.token) {
-      state.user = saved.user;
-      state.token = saved.token;
-      fajax.setToken(saved.token);
-    }
-  } catch (e) {}
-
-  function saveState() {
-    sessionStorage.setItem(
-      "tm_state",
-      JSON.stringify({ user: state.user, token: state.token }),
-    );
-  }
-
-  /* ======== Helpers ======== */
-  function $(id) {
-    return document.getElementById(id);
-  }
-
-  function esc(s) {
-    var d = document.createElement("div");
-    d.textContent = s || "";
-    return d.innerHTML;
-  }
-
-  /* ======== Router ======== */
-  function showPage(name) {
-    var container = $("view-container");
-    container.innerHTML = "";
-    var tmpl = document.getElementById("template-" + name);
-    if (tmpl) {
-      container.appendChild(tmpl.content.cloneNode(true));
-    }
-    $("navbar").style.display = name === "tasks" ? "flex" : "none";
-  }
-
-  function route() {
-    var hash = location.hash.replace("#", "") || "login";
-
-    if (hash === "tasks" && !state.token) {
-      hash = "login";
-    }
-    if ((hash === "login" || hash === "register") && state.token) {
-      hash = "tasks";
-    }
-
-    showPage(hash);
-
-    if (hash === "login") {
-      initLogin();
-    }
-    if (hash === "register") {
-      initRegister();
-    }
-    if (hash === "tasks") {
-      initTaskForm();
-      $("nav-user").textContent = state.user ? state.user.name : "";
-      loadTasks();
-    }
-  }
-
-  window.addEventListener("hashchange", route);
-
   /* ======== LOGIN ======== */
   function initLogin() {
     $("login-form").addEventListener("submit", function (e) {
@@ -364,6 +293,12 @@
     initLogout();
     route();
   });
+
+  /* Expose functions to window for router.js calls */
+  window.initLogin = initLogin;
+  window.initRegister = initRegister;
+  window.initTaskForm = initTaskForm;
+  window.loadTasks = loadTasks;
 
   /* Expose task actions globally for inline onclick handlers */
   window.app = {
