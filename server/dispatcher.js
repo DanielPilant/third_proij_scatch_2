@@ -1,7 +1,7 @@
 /**
- * Dispatcher - Routes incoming requests to the correct server.
- * Auth routes (/api/auth/*) go to authServer.
- * Task routes (/api/tasks/*) go to appServer.
+ * Dispatcher - Routes incoming requests to the specific server.
+ * Routes starting with /api/auth go to authServer.
+ * Routes starting with /api/tasks go to appServer.
  */
 var dispatcher = {
   handleRequest: function (req) {
@@ -17,7 +17,7 @@ var dispatcher = {
 
     return {
       status: 404,
-      body: { success: false, error: { message: "Not found" } },
+      body: { success: false, error: { message: "Dispatcher: Endpoint not found" } },
     };
   },
 };
