@@ -5,18 +5,22 @@
   /* ======== LOGIN ======== */
   function initLogin() {
     $("login-form").addEventListener("submit", function (e) {
-      e.preventDefault();
+      e.preventDefault(); // stop form from submitting normally
       var btn = $("login-btn");
       btn.disabled = true;
+
+      // Clear previous messages
       $("login-msg").textContent = "";
+
+      // Reset message class to default (in case it was an error before)
       $("login-msg").className = "msg";
 
       fajax.post(
-        "/api/auth/login",
+        "/api/auth/login", // url
         {
           email: $("login-email").value.trim(),
           password: $("login-password").value,
-        },
+        }, // body
         function (res) {
           state.user = res.data.data.user;
           state.token = res.data.data.token;
@@ -24,12 +28,12 @@
           saveState();
           btn.disabled = false;
           location.hash = "#tasks";
-        },
+        }, // success
         function (err) {
           $("login-msg").textContent = err.message || "Login failed";
           $("login-msg").className = "msg msg-error";
           btn.disabled = false;
-        },
+        }, // error
       );
     });
   }
@@ -37,7 +41,7 @@
   /* ======== REGISTER ======== */
   function initRegister() {
     $("register-form").addEventListener("submit", function (e) {
-      e.preventDefault();
+      e.preventDefault(); // stop form from submitting normally
       var btn = $("register-btn");
       btn.disabled = true;
       $("register-msg").textContent = "";

@@ -36,14 +36,15 @@ FXMLHttpRequest.prototype.setRequestHeader = function (name, value) {
 };
 
 FXMLHttpRequest.prototype.send = function (body) {
-  var self = this;
+  var self = this; // to capture "this" context for callbacks
   var req = {
-    method: this.method,
-    url: this.url,
-    headers: this.headers,
-    body: body,
+    method: this.method, // "GET", "POST", etc.
+    url: this.url, // "/api/tasks", "/api/auth/login", etc.
+    headers: this.headers, // { "Authorization": "Bearer abc123", ... }
+    body: body, // string or object (if object, will be JSON.stringified by network.send)
   };
 
+  // Simulate network request using the provided network.send function
   network.send(
     req,
     function (response) {
@@ -81,14 +82,14 @@ var fajax = (function () {
 
     xhr.onload = function () {
       if (xhr.status >= 200 && xhr.status < 300) {
-        onSuccess({ status: xhr.status, data: xhr.response });
+        onSuccess({ status: xhr.status, data: xhr.response }); // onSuccess of auth.js
       } else if (xhr.status >= 500 && attempt < MAX_RETRIES) {
         request(method, url, body, onSuccess, onError, attempt + 1);
       } else {
         var msg =
           (xhr.response && xhr.response.error && xhr.response.error.message) ||
           "Request failed";
-        onError({ status: xhr.status, data: xhr.response, message: msg });
+        onError({ status: xhr.status, data: xhr.response, message: msg }); // onError of auth.js
       }
     };
 
