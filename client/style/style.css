@@ -1,14 +1,26 @@
-/* ========== Base ========== */
+/* ========== Base & Animations ========== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: #f3f4f6; /* רקע מעט רך יותר */
-  color: #333;
-  line-height: 1.5;
+  background: #f3f4f6; /* Softer background */
+  color: #1f2937;
+  line-height: 1.6;
 }
 
 /* ========== Layout ========== */
@@ -16,6 +28,7 @@ body {
   max-width: 700px;
   margin: 0 auto;
   padding: 20px;
+  animation: fadeIn 0.4s ease-out; /* Smooth entry animation */
 }
 
 /* ========== Auth Pages ========== */
@@ -23,14 +36,16 @@ body {
   max-width: 380px;
   margin: 80px auto;
   background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  padding: 35px 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Deep, soft shadow */
+  animation: fadeIn 0.5s ease-out;
 }
 .auth-card h2 {
   text-align: center;
   margin-bottom: 24px;
-  color: #1f2937;
+  color: #111827;
+  font-weight: 700;
 }
 
 /* ========== Forms ========== */
@@ -45,19 +60,22 @@ input,
 select {
   display: block;
   width: 100%;
-  padding: 10px 12px;
+  padding: 10px 14px;
   margin-bottom: 16px;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
+  background-color: #f9fafb;
   transition:
     border-color 0.2s ease,
-    box-shadow 0.2s ease; /* מעבר חלק */
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
 }
 input:focus {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  background-color: #fff;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); /* Modern focus ring */
 }
 
 /* ========== Buttons ========== */
@@ -69,19 +87,22 @@ input:focus {
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
-  transition: all 0.2s ease;
+  letter-spacing: 0.3px;
+  transition: all 0.2s ease; /* Smooth hover effects */
 }
 .btn:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px); /* Slight lift */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 .btn:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0); /* Return down on click */
 }
 .btn-primary {
   background: #2563eb;
   color: #fff;
   width: 100%;
+  padding: 12px;
+  font-size: 15px;
 }
 .btn-primary:hover:not(:disabled) {
   background: #1d4ed8;
@@ -98,11 +119,11 @@ input:focus {
   background: #dc2626;
 }
 .btn-success {
-  background: #16a34a;
+  background: #10b981; /* Vibrant modern green */
   color: #fff;
 }
 .btn-success:hover:not(:disabled) {
-  background: #15803d;
+  background: #059669;
 }
 .btn-warning {
   background: #f59e0b;
@@ -112,7 +133,7 @@ input:focus {
   background: #d97706;
 }
 button:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
@@ -122,16 +143,18 @@ button:disabled {
 .navbar {
   background: #fff;
   border-bottom: 1px solid #e5e7eb;
-  padding: 12px 20px;
+  padding: 14px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 .navbar .brand {
   font-weight: 800;
-  font-size: 20px;
-  color: #2563eb;
+  font-size: 22px;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   letter-spacing: -0.5px;
 }
 .navbar .nav-right button {
@@ -144,16 +167,23 @@ button:disabled {
   margin: 8px 0;
   font-size: 13px;
   font-weight: 500;
+  border-radius: 6px;
 }
 .msg-error {
   color: #dc2626;
+  background: #fef2f2;
+  padding: 8px 12px;
+  border: 1px solid #fecaca;
 }
 .msg-success {
   color: #16a34a;
+  background: #f0fdf4;
+  padding: 8px 12px;
+  border: 1px solid #bbf7d0;
 }
 .form-footer {
   text-align: center;
-  margin-top: 16px;
+  margin-top: 18px;
   font-size: 14px;
 }
 .form-footer a {
@@ -172,64 +202,86 @@ button:disabled {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 .task-item {
   background: #fff;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 10px;
+  border-radius: 10px;
+  padding: 18px;
+  margin-bottom: 12px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   transition:
     transform 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 .task-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+  border-color: #d1d5db;
 }
 .task-item.done {
   background: #f9fafb;
+  border-color: #f3f4f6;
 }
 .task-item.done .task-info {
-  opacity: 0.5;
+  opacity: 0.6;
+}
+.task-item.done .task-info strong {
   text-decoration: line-through;
+  color: #6b7280;
 }
 .task-info {
   flex: 1;
-  margin-right: 12px;
+  margin-right: 15px;
 }
 .task-info strong {
   display: block;
-  margin-bottom: 4px;
-  font-size: 16px;
-  color: #1f2937;
+  margin-bottom: 6px;
+  font-size: 17px;
+  color: #111827;
+  transition: color 0.2s ease;
 }
+.task-info div {
+  margin-bottom: 8px;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+/* Status Badge Styling */
 .task-info small {
-  color: #6b7280;
-  font-weight: 500;
+  display: inline-block;
+  background: #e5e7eb;
+  color: #374151;
+  padding: 3px 8px;
+  border-radius: 999px; /* Pill shape */
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
+
 .task-actions {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-shrink: 0;
 }
 
 /* ========== Task Form (inline) ========== */
 .task-form {
   background: #fff;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 24px;
+  border-radius: 10px;
   border: 1px solid #e5e7eb;
   margin-bottom: 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 .task-form h3 {
-  margin-bottom: 14px;
-  color: #1f2937;
+  margin-bottom: 16px;
+  color: #111827;
 }
 
 /* ========== Utility ========== */
@@ -247,25 +299,25 @@ button:disabled {
 @media (max-width: 600px) {
   .auth-card {
     margin: 40px auto;
-    padding: 20px;
+    padding: 25px 20px;
   }
 
   .task-item {
-    flex-direction: column;
+    flex-direction: column; /* Stack vertically on small screens */
   }
 
   .task-info {
     margin-right: 0;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
     width: 100%;
   }
 
   .task-actions {
     width: 100%;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allow wrapping if needed */
   }
 
   #task-submit {
-    width: 100% !important;
+    width: 100% !important; /* Full width button on mobile */
   }
 }

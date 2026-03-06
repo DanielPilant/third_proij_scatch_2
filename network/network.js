@@ -24,7 +24,12 @@ var network = {
       try {
         var response = dispatcher.handleRequest(request);
         console.log(
-          "%c⬇️ [Network In] " + response.status + " " + request.url,
+          "%c⬇️ [Network In] " +
+            response.status +
+            " " +
+            JSON.stringify(response.body) +
+            " " +
+            request.url,
           "color: #1ba339; font-weight: bold;",
         );
         onSuccess(response);

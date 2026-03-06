@@ -33,19 +33,25 @@
 
         var btnTodo =
           t.status !== "todo"
-            ? '<button class="btn btn-sm btn-success" onclick="app.setStatus(\'' +
+            ? '<button class="btn btn-sm btn-success" id="btn-todo-' +
+              t.id +
+              '" onclick="app.setStatus(\'' +
               t.id +
               "', 'todo')\">To Do</button> "
             : "";
         var btnProg =
           t.status !== "in-progress"
-            ? '<button class="btn btn-sm btn-success" onclick="app.setStatus(\'' +
+            ? '<button class="btn btn-sm btn-success" id="btn-in-progress-' +
+              t.id +
+              '" onclick="app.setStatus(\'' +
               t.id +
               "', 'in-progress')\">In progress</button> "
             : "";
         var btnDone =
           t.status !== "done"
-            ? '<button class="btn btn-sm btn-success" onclick="app.setStatus(\'' +
+            ? '<button class="btn btn-sm btn-success" id="btn-done-' +
+              t.id +
+              '" onclick="app.setStatus(\'' +
               t.id +
               "', 'done')\">Done</button> "
             : "";
@@ -63,16 +69,22 @@
           "</small>" +
           "</div>" +
           '<div class="task-actions">' +
-          '<button class="btn btn-sm" onclick="app.viewTask(\'' +
+          '<button class="btn btn-sm" id="btn-view-' +
+          t.id +
+          '" onclick="app.viewTask(\'' +
           t.id +
           "')\">View</button> " +
           btnTodo +
           btnProg +
           btnDone +
-          '<button class="btn btn-sm btn-warning" onclick="app.editTask(\'' +
+          '<button class="btn btn-sm btn-warning" id="btn-edit-' +
+          t.id +
+          '" onclick="app.editTask(\'' +
           t.id +
           "')\">Edit</button> " +
-          '<button class="btn btn-sm btn-danger" onclick="app.deleteTask(\'' +
+          '<button class="btn btn-sm btn-danger" id="btn-delete-' +
+          t.id +
+          '" onclick="app.deleteTask(\'' +
           t.id +
           "')\">Del</button>" +
           "</div></div>";
@@ -141,10 +153,13 @@
   }
 
   function viewTask(id) {
+    var btn = $("btn-view-" + id);
+    if (btn) btn.disabled = true;
     fajax.get(
       "/api/tasks/" + id,
       function (res) {
         var t = res.data.data.task;
+        btn.disabled = false;
         alert(
           "Title: " +
             t.title +
@@ -165,6 +180,8 @@
   function editTask(id) {
     for (var i = 0; i < taskCache.length; i++) {
       if (taskCache[i].id === id) {
+        var btn = $("btn-edit-" + id);
+        if (btn) btn.disabled = true;
         $("task-title").value = taskCache[i].title;
         $("task-desc").value = taskCache[i].description || "";
         $("task-submit").textContent = "Update Task";
@@ -176,6 +193,8 @@
   }
 
   function deleteTask(id) {
+    var btn = $("btn-delete-" + id);
+    if (btn) btn.disabled = true;
     fajax.del(
       "/api/tasks/" + id,
       function () {
@@ -189,6 +208,8 @@
   }
 
   function setStatus(id, newStatus) {
+    var btn = $("btn-" + newStatus + "-" + id);
+    if (btn) btn.disabled = true;
     fajax.put(
       "/api/tasks/" + id,
       { status: newStatus },
