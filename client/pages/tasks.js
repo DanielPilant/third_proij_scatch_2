@@ -29,7 +29,7 @@
     } else {
       for (var i = 0; i < taskCache.length; i++) {
         var t = taskCache[i];
-        var doneClass = t.status === "done" ? " done" : "";
+        var statusClass = t.status === "done" ? " done" : "";
 
         var btnTodo =
           t.status !== "todo"
@@ -57,7 +57,7 @@
             : "";
         html +=
           '<div class="task-item' +
-          doneClass +
+          statusClass +
           '">' +
           '<div class="task-info">' +
           "<strong>" +
