@@ -5,6 +5,7 @@
   var taskCache = [];
   var editingId = null;
 
+  // Load tasks from server and render
   function loadTasks() {
     $("task-list").innerHTML = '<p class="text-center">Loading tasks…</p>';
 
@@ -21,6 +22,7 @@
     );
   }
 
+  // render the tasks
   function renderTasks() {
     var html = "";
     if (taskCache.length === 0) {
@@ -93,6 +95,7 @@
     $("task-list").innerHTML = html;
   }
 
+  // sends the data to the server to create/update a task, then reloads the list
   function initTaskForm() {
     $("task-form").addEventListener("submit", function (e) {
       e.preventDefault();
@@ -144,6 +147,7 @@
     });
   }
 
+  // reset the form to initial state after adding/editing a task
   function resetForm() {
     $("task-title").value = "";
     $("task-desc").value = "";
@@ -152,6 +156,7 @@
     editingId = null;
   }
 
+  // view task details in an alert (could be a modal in a real app)
   function viewTask(id) {
     var btn = $("btn-view-" + id);
     if (btn) btn.disabled = true;
@@ -177,6 +182,7 @@
     );
   }
 
+  // pre-fill the form with task data for editing
   function editTask(id) {
     for (var i = 0; i < taskCache.length; i++) {
       if (taskCache[i].id === id) {
@@ -192,6 +198,7 @@
     }
   }
 
+  // send delete request to server, then reload list
   function deleteTask(id) {
     var btn = $("btn-delete-" + id);
     if (btn) btn.disabled = true;
@@ -207,6 +214,7 @@
     );
   }
 
+  // send status update to server, then reload list
   function setStatus(id, newStatus) {
     var btn = $("btn-" + newStatus + "-" + id);
     if (btn) btn.disabled = true;
