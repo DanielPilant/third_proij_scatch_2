@@ -7,7 +7,7 @@
     return document.getElementById(id);
   }
 
-  // Simple helper to escape HTML special chars
+  // Simple helper to.escape HTML special chars
   function esc(s) {
     var d = document.createElement("div");
     d.textContent = s || "";
@@ -19,7 +19,8 @@
     container.innerHTML = "";
     var tmpl = document.getElementById("template-" + name);
     if (tmpl) {
-      container.appendChild(tmpl.content.cloneNode(true));
+      nodeTemplate = tmpl.content.cloneNode(true);
+      container.appendChild(nodeTemplate);
     }
     $("navbar").style.display = name === "tasks" ? "flex" : "none";
   }
