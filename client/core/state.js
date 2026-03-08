@@ -18,7 +18,7 @@
   function saveState() {
     sessionStorage.setItem(
       "tm_state",
-      JSON.stringify({ user: state.user, token: state.token }),
+      JSON.stringify({ user: state.user, token: state.token }), // only save necessary info
     );
   }
 
