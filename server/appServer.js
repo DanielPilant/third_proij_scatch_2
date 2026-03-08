@@ -4,10 +4,18 @@
  */
 var appServer = (function () {
   
+  /*Random ID number generator*/ 
   function uid() {
     return Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
   }
 
+  /**
+   * Standardizes server responses with a status code and body.
+   * @param {number} status - HTTP status code.
+   * @param {any} data - Data payload or error message.
+   * @param {boolean} isError - Flag to format as an error response.
+   * @returns {object} Formatted response object.
+   */
   function createResponse(status, data, isError = false) {
     return {
       status: status,
@@ -15,18 +23,27 @@ var appServer = (function () {
     };
   }
 
+  /**
+   * Authenticates the request by verifying the session token.
+   * Returns the userId if the token is valid, otherwise returns null.
+   */
   function authenticate(headers) {
     var authH = (headers || {})["Authorization"] || "";
     var token = authH.indexOf("Bearer ") === 0 ? authH.substring(7) : authH;
     if (!token) return null;
 
-    var sessions = userDbApi.getSessions(); // Validate against user sessions
+    var sessions = userDbApi.getSessions();
     for (var i = 0; i < sessions.length; i++) {
       if (sessions[i].token === token) return sessions[i].userId;
     }
     return null;
   }
 
+  /**
+   * Main logic handler for task management.
+   * Verifies user identity via token and performs CRUD operations on tasks.
+   * Ensures data privacy by filtering tasks by userId.
+   */
   function handleRequest(req) {
     var method = req.method;
     var url = req.url;
@@ -102,5 +119,8 @@ var appServer = (function () {
     return createResponse(404, "Endpoint not found", true);
   }
 
+  /**
+   * Public API: Exposes the handleRequest method to the outside world (Dispatcher).
+   */
   return { handleRequest: handleRequest };
 })();
