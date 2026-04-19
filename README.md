@@ -4,6 +4,12 @@
 
 This project demonstrates a deep understanding of web architecture by simulating a full client-server ecosystem directly inside the browser. It includes a custom routing system, a simulated network layer with latency/packet-drop, and a mock backend server with a database.
 
+## 📸 Screenshots
+
+| Login & Authentication | Task Management Dashboard |
+| :---: | :---: |
+| <img width="400" alt="Login Screen" src="https://github.com/user-attachments/assets/1afa5476-e77b-4167-a6f1-969e70293278" /> | <img width="400" alt="Task Dashboard" src="https://github.com/user-attachments/assets/4a154077-009d-4470-97e8-50e7edc4a4bb" /> |
+
 ---
 
 ## 🎯 Project Objectives
@@ -40,8 +46,6 @@ The application is divided into 4 distinct layers, strictly adhering to the **Se
 * **App DB (`appDb.js`):** Stores tasks. Data is persisted in the browser's `localStorage` to simulate a persistent database.
 
 ---
-
-<img width="954" height="860" alt="image" src="https://github.com/user-attachments/assets/1db2a814-eba3-4968-b731-e68199ed3ab2" />
 
 ## ✨ Features
 * **User Authentication:** Register, Login, and Logout functionality with secure password validation.
