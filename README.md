@@ -4,6 +4,8 @@
 
 This project demonstrates a deep understanding of web architecture by simulating a full client-server ecosystem directly inside the browser. It includes a custom routing system, a simulated network layer with latency/packet-drop, and a mock backend server with a database.
 
+<img width="954" height="860" alt="image" src="https://github.com/user-attachments/assets/1db2a814-eba3-4968-b731-e68199ed3ab2" />
+
 ---
 
 ## 🎯 Project Objectives
